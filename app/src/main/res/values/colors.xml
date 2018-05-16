@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#E93860</color>
+    <color name="colorPrimaryDark">#E93860</color>
+    <color name="colorAccent">#E93860</color>
+    <color name="hintcolor">#D2D2D2</color>
+    <color name="color_222222">#222222</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_D2D2D2">#D2D2D2</color>
+    <color name="color_E2E2E2">#E2E2E2</color>
+    <color name="white">#ffffff</color>
+    <color name="color_000000">#000000</color>
+    <color name="color_B2B2B2">#B2B2B2</color>
+    <color name="color_E93860">#E93860</color>
+    <color name="calendar_gray">#b2b2b2</color>
+    <color name="c66aaff">#66aaff</color>
+    <color name="calendar_gray_text">#b2b2b2</color>
+    <color name="color_fff285">#fff285</color>
+    <color name="color_F2F2F2">#F2F2F2</color>
+    <color name="color_555555">#555555</color>
+    <color name="color_505050">#505050</color>
+    <color name="D2D2D2">#D2D2D2</color>
+    <color name="color_888888">#888888</color>
+    <color name="color_66000000">#66000000</color>
+    <color name="color_F0F3F7">#F0F3F7</color>
+    <color name="color_F8F8F8">#F8F8F8</color>
+    <color name="color_757575">#757575</color>
+    <color name="color_FF8F31">#FF8F31</color>
+    <color name="color_F5F4F4">#F5F4F4</color>
+    <color name="bg_color_F4C57A">#F4C57A</color>
+    <color name="color_F26F8E">#F26F8E</color>
+    <color name="color_F2A5B7">#F2A5B7</color>
+    <color name="color_999999">#999999</color>
+
+</resources>
