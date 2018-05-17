@@ -1,12 +1,22 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <import type="xiaomakj.wificlock.com.mvp.presenter.MainPresenter.MainModel" />
-
+        <import type="android.support.v7.widget.RecyclerView.Adapter" />
         <variable
             name="mainModel"
             type="MainModel" />
+
+        <variable
+            name="adapter"
+            type="Adapter" />
+
+        <variable
+            name="layoutManager"
+            type="android.support.v7.widget.RecyclerView.LayoutManager" />
+
     </data>
 
     <LinearLayout
@@ -16,5 +26,34 @@
 
         <include layout="@layout/header"></include>
 
+        <Button
+            android:id="@+id/getWiftList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/getWiftList" />
+
+        <Button
+            android:id="@+id/OpenWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/OpenWifi" />
+
+        <Button
+            android:id="@+id/CloseWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/CloseWifi" />
+
+        <Button
+            android:id="@+id/ConnectWithWpa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ConnectWithWpa" />
+
+        <com.aspsine.irecyclerview.IRecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:adapter="@{adapter}"
+            app:layoutManager="@{layoutManager}"></com.aspsine.irecyclerview.IRecyclerView>
     </LinearLayout>
 </layout>

@@ -1,16 +1,18 @@
 package xiaomakj.wificlock.com.mvp.ui.base
 
-import android.os.Bundle
+import android.app.ProgressDialog
 import android.content.pm.ActivityInfo
-import android.support.v7.app.AppCompatActivity
-import xiaomakj.wificlock.com.App
-import xiaomakj.wificlock.com.component.AppComponent
-import xiaomakj.wificlock.com.common.BaseContract
-import xiaomakj.wificlock.com.common.RxPresenter
-import javax.inject.Inject
 import android.databinding.ViewDataBinding
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.header.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import xiaomakj.wificlock.com.App
+import xiaomakj.wificlock.com.common.BaseContract
+import xiaomakj.wificlock.com.common.RxPresenter
+import xiaomakj.wificlock.com.component.AppComponent
+import javax.inject.Inject
+
 
 abstract class BaseActivity<T : RxPresenter<V, M>, V : BaseContract.BaseView, M : ViewDataBinding> : AppCompatActivity(), BaseContract.BaseView {
     var isFirst: Boolean = false
@@ -24,6 +26,9 @@ abstract class BaseActivity<T : RxPresenter<V, M>, V : BaseContract.BaseView, M 
         initView()
     }
 
+    val dailog: ProgressDialog  by lazy {
+        ProgressDialog(this)
+    }
 
     abstract fun setActivityComponent(appComponent: AppComponent)
 
@@ -49,6 +54,6 @@ abstract class BaseActivity<T : RxPresenter<V, M>, V : BaseContract.BaseView, M 
     override fun onDestroy() {
         super.onDestroy()
         mPresenter.detachView()
+        dailog.dismiss()
     }
-
 }

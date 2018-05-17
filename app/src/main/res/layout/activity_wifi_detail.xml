@@ -1,0 +1,26 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="xiaomakj.wificlock.com.mvp.presenter.WifiDetailPresenter.WifiDetailModel" />
+
+        <variable
+            name="wifiDetailModel"
+            type="WifiDetailModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/header"></include>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_10"
+            android:textColor="@color/color_222222"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+</layout>

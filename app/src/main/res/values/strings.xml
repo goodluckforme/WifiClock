@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">WifiClock</string>
     <string name="main">首页</string>
+    <string name="getWiftList">获取Wifi列表</string>
+    <string name="CloseWifi">关闭Wifi</string>
+    <string name="OpenWifi">打开Wifi</string>
+    <string name="ConnectWithWpa">连接WIFI</string>
+    <string name="loading">正在加载中..</string>
+    <string name="wifi_detail">Wifi详情</string>
 </resources>

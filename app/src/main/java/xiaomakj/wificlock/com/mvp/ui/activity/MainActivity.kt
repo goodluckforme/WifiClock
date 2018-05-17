@@ -1,13 +1,13 @@
 package xiaomakj.wificlock.com.mvp.ui.activity
 
-import xiaomakj.wificlock.com.mvp.ui.base.BaseActivity
-import xiaomakj.wificlock.com.mvp.presenter.MainPresenter
-import xiaomakj.wificlock.com.mvp.contract.MainContract
+import android.databinding.DataBindingUtil
+import xiaomakj.wificlock.com.R
 import xiaomakj.wificlock.com.component.AppComponent
 import xiaomakj.wificlock.com.component.DaggerMainComponent
 import xiaomakj.wificlock.com.databinding.ActivityMainBinding
-import xiaomakj.wificlock.com.R
-import android.databinding.DataBindingUtil
+import xiaomakj.wificlock.com.mvp.contract.MainContract
+import xiaomakj.wificlock.com.mvp.presenter.MainPresenter
+import xiaomakj.wificlock.com.mvp.ui.base.BaseActivity
 
 class MainActivity : BaseActivity<MainPresenter, MainContract.View, ActivityMainBinding>(), MainContract.View {
 
@@ -38,5 +38,12 @@ class MainActivity : BaseActivity<MainPresenter, MainContract.View, ActivityMain
 
     override fun showError(msg: String) {
 
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 555) {
+            mPresenter.getPermission()
+        }
     }
 }
