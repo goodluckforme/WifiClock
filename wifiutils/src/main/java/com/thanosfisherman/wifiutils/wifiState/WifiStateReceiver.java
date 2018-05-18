@@ -29,6 +29,7 @@ public final class WifiStateReceiver extends BroadcastReceiver {
             case WifiManager.WIFI_STATE_DISABLING:
                 break;
             case WifiManager.WIFI_STATE_DISABLED:
+                wifiStateCallback.onWifiDisabled();
                 break;
         }
     }

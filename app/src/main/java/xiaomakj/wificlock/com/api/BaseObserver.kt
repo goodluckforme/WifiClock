@@ -1,6 +1,7 @@
 package xiaomakj.wificlock.com.api
 
 import android.content.Context
+import org.jetbrains.anko.toast
 import xiaomakj.wificlock.com.data.HttpResult
 import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
 import rx.Observer
@@ -20,8 +21,8 @@ abstract class BaseObserver<T>(val context: Context) : Observer<HttpResult<T>> {
     override fun onNext(result: HttpResult<T>?) {
         when {
             result == null -> onRequestFail()
-            result.result == SUCCESS -> onNetSuccess(result.datas)
-            result.result == FAILLOGIN -> {
+            result.code == SUCCESS -> onNetSuccess(result.data)
+            result.code == FAILLOGIN -> {
                 SharedPreferencesUtil.instance?.remove(USERINFO)
                 onRequestFail(Throwable("$FAILLOGIN"))
             }

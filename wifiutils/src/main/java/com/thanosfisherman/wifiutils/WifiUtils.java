@@ -95,6 +95,11 @@ public final class WifiUtils implements WifiConnectorBuilder,
                 }
             }
         }
+
+        @Override
+        public void onWifiDisabled() {
+
+        }
     };
 
     @NonNull

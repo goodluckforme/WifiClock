@@ -170,7 +170,8 @@ dependencies {
     //    implementation 'cn.bingoogolapple:bga-zxing:1.1.9@aar'
 
     //    //分包
-
+    //复杂布局(不规则  或者流式布局）
+    implementation 'com.google.android:flexbox:1.0.0'
     // implementation 'com.android.support:multidex:1.0.2'
     implementation project(':irecyclerview')
     implementation project(path: ':wifiutils')

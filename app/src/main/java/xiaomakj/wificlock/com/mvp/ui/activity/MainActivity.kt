@@ -1,6 +1,8 @@
 package xiaomakj.wificlock.com.mvp.ui.activity
 
 import android.databinding.DataBindingUtil
+import android.view.View
+import kotlinx.android.synthetic.main.header.*
 import xiaomakj.wificlock.com.R
 import xiaomakj.wificlock.com.component.AppComponent
 import xiaomakj.wificlock.com.component.DaggerMainComponent
@@ -24,6 +26,7 @@ class MainActivity : BaseActivity<MainPresenter, MainContract.View, ActivityMain
     public override fun initView() {
         mPresenter.getLayoutRes(DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main))
         super.initView()
+        head_back.visibility = View.INVISIBLE
     }
 
     public override fun initData() {

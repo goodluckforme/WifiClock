@@ -7,6 +7,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 import rx.Observable
+import java.net.URLConnection
 import java.util.*
 
 /**
@@ -82,4 +83,7 @@ interface AppService {
             @Query("page") page: Int,
             @Query("client") client: String = "android"
     ): Observable<HttpResult<Any>>
+
+    @GET(TEST)
+    fun getTEST(): Observable<HttpResult<List<TestDatas> >>
 }

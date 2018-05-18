@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="xiaomakj.wificlock.com">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- WIFI -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -27,6 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".mvp.ui.activity.WifiDetailActivity"></activity>
+
+        <service android:name=".services.ColockSevice"></service>
     </application>
 
 </manifest>

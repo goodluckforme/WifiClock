@@ -12,6 +12,9 @@ import rx.Observer
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import xiaomakj.wificlock.com.common.BASEURL
+import xiaomakj.wificlock.com.data.HttpResult
+import xiaomakj.wificlock.com.data.TestDatas
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -38,7 +41,7 @@ class AppApi private constructor() {
                 .retryOnConnectionFailure(true) // 失败重发
                 .build()
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://www.baidu.com")
+                .baseUrl(BASEURL)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create()) // 添加Rx适配器
                 .addConverterFactory(GsonConverterFactory.create()) // 添加Gson转换器
                 .client(okHttpClient)
@@ -63,5 +66,10 @@ class AppApi private constructor() {
                 data,
                 client
         ))
+    }
+
+    //测试我搭建的PHP平台
+    fun getTest(observer: BaseObserver<List<TestDatas>>): Subscription? {
+        return observer(observer, appService.getTEST())
     }
 }
