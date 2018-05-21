@@ -1,0 +1,32 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="xiaomakj.wificlock.com.mvp.presenter.ChooseWorkPointPresenter.ChooseWorkPointModel" />
+
+        <variable
+            name="chooseWorkPointModel"
+            type="ChooseWorkPointModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/header"></include>
+
+        <com.amap.api.maps2d.MapView
+            android:id="@+id/mMapView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/color_E2E2E2"></com.amap.api.maps2d.MapView>
+
+        <xiaomakj.wificlock.com.view.WaveView
+            android:id="@+id/mWaveView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+</layout>

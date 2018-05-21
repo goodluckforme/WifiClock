@@ -153,13 +153,8 @@ dependencies {
 
     //    //    implementation 'cn.bingoogolapple:bga-photopicker:1.2.3@aar'
 
-    //    //高德定位
-
-    //    implementation 'com.amap.api:location:latest.integration'
-
-    //    //高德搜索
-
-    //    //    implementation 'com.amap.api:search:latest.integration'
+    //高德定位
+    implementation 'com.amap.api:location:latest.integration'
 
     //    //扫描二维码
 
@@ -169,9 +164,9 @@ dependencies {
 
     //    implementation 'cn.bingoogolapple:bga-zxing:1.1.9@aar'
 
-    //    //分包
     //复杂布局(不规则  或者流式布局）
     implementation 'com.google.android:flexbox:1.0.0'
+    //分包
     // implementation 'com.android.support:multidex:1.0.2'
     implementation project(':irecyclerview')
     implementation project(path: ':wifiutils')

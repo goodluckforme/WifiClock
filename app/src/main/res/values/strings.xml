@@ -13,4 +13,5 @@
     <string name="SetWifiListener">设置WIFI状态监听</string>
     <string name="ClockWork">打卡上班</string>
     <string name="AutoClock">自动打卡</string>
+    <string name="ChooseWorkPoint">请选择上班地点</string>
 </resources>

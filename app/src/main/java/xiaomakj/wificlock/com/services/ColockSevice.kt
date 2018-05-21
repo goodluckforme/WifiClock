@@ -1,13 +1,40 @@
 package xiaomakj.wificlock.com.services
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.app.PendingIntent
+import android.content.Context
+import android.content.IntentFilter
+import android.location.Location
+import android.location.LocationProvider
+import android.net.ConnectivityManager
+import android.net.wifi.ScanResult
+import android.net.wifi.WifiManager
+import android.os.Bundle
+import android.util.Log
+import com.thanosfisherman.wifiutils.WifiUtils
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionScanResultsListener
+import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener
+import com.thanosfisherman.wifiutils.wifiState.WifiStateCallback
+import com.thanosfisherman.wifiutils.wifiState.WifiStateReceiver
+import org.jetbrains.anko.collections.forEachByIndex
+import org.jetbrains.anko.toast
+import rx.Observable
+import rx.Subscription
 import xiaomakj.wificlock.com.R
 import xiaomakj.wificlock.com.mvp.ui.activity.MainActivity
+import xiaomakj.wificlock.com.utils.LocationUtils
+import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
+import rx.functions.Action1
+import rx.android.schedulers.AndroidSchedulers
+import rx.internal.operators.OperatorReplay.observeOn
+import xiaomakj.wificlock.com.App
+import xiaomakj.wificlock.com.utils.Utils
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -19,7 +46,7 @@ class ColockSevice : Service() {
      * 1.WIFI连上后
      * 2.WIFI距离路由器距离到达临界值
      * 3.GPS定位到当前位置
-     * 4.手动打开自定打卡APP（必须条件 长期运行可加入白名单）
+     * 4.手动打开自动打卡APP（必须条件 长期运行可加入白名单）
      * 5.后台长期运行的服务 能够通过WIFI打开的广播 扫描WIFI环境并选择连接上指定WIFI.(目前只通过SSID判断即可)
      * 6.根据前面的条件 寻找最佳时机  请求PHP服务器 打卡
      *
@@ -33,34 +60,154 @@ class ColockSevice : Service() {
         return mClockBinder
     }
 
-    var isPlay = false
+    val wifiStateReceiver by lazy {
+        WifiStateReceiver(object : WifiStateCallback {
+            override fun onWifiEnabled() {
+                //此处开启While无限循环
+                toast("WiFi 已经打开")
+                intervalSb?.unsubscribe()
+                readyToWifiColock()
+            }
 
+            override fun onWifiDisabled() {
+                toast("WiFi 已经关闭")
+                intervalSb?.unsubscribe()
+            }
+        })
+    }
+    var intervalSb: Subscription? = null
+
+    private fun readyToWifiColock() {
+        intervalSb = Observable.interval(5000, 10000, TimeUnit.MILLISECONDS)
+                //延时3000 ，每间隔3000，时间单位
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
+                    if (coordinate.contains(",")) {
+                        val split = coordinate.split(",")
+                        val currentAmapLocation = App.instance.amapLocation ?: return@subscribe
+                        val distanceOfTwoPoints = Utils.DistanceOfTwoPoints(currentAmapLocation.latitude, currentAmapLocation.longitude, split[0].toDouble(), split[1].toDouble()) * 1000
+                        if (distanceOfTwoPoints < 100) {
+                            toast("距离打卡地点小于100米尝试连接公司WIFI")
+                            //扫描并尝试连接Chuyukeji5.0
+                            WifiUtils.withContext(applicationContext)
+                                    .connectWithScanResult("chyukeji302") { scanResults ->
+                                        scanResults.firstOrNull { "chuyukeji2.4" == it.SSID }
+                                    }
+                                    .onConnectionResult { isSuccess ->
+                                        if (isSuccess) {
+                                            val wifiDistance = getWIFIDistance()
+                                            toast("测量WIFI和手机的距离为" + wifiDistance)
+                                            if (wifiDistance < 20) {
+                                                toast("WIFI和手机的距离是否小于20m,尝试自动打卡")
+//                                                intervalSb?.unsubscribe()
+                                                toast("服务器无响应,请联系马齐383930056@qq.com")
+                                            }
+                                        } else {
+                                            toast("连接公司WIFI失败 请尝试手动打卡")
+                                        }
+                                    }.start()
+                        } else {
+                            toast("距离打卡地点${distanceOfTwoPoints}米")
+                        }
+                    }
+                }
+
+    }
+
+    @SuppressLint("WifiManagerLeak")
+    private fun getWIFIDistance(): Double {
+        val wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val connectManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val netInfo = connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+        val dhcpInfo = wifiManager.getDhcpInfo()
+        val wifiInfo = wifiManager.getConnectionInfo()
+        val list = wifiManager.getScanResults() as List<android.net.wifi.ScanResult>
+        return DisByRssi(wifiInfo.getRssi()) ?: 9999.0
+    }
+
+    fun DisByRssi(rssi: Int): Double? {
+        val iRssi = Math.abs(rssi)
+        val power = (iRssi - 35) / (10 * 2.1)
+        return Math.pow(10.0, power)
+    }
+
+    var isPlay = false
+    var lastLocation: Location? = null
     val mClockBinder by lazy { ClockBinder() }
 
+    interface ColockOnLocationChangeListener {
+        fun enableGps()
+        fun disableGps()
+    }
+
+    lateinit var mColockOnLocationChangeListener: ColockOnLocationChangeListener
+
     inner class ClockBinder : Binder() {
-        fun startForeground() = play()
+        fun startForeground(listener: ColockOnLocationChangeListener) {
+            play()
+            mClockBinder.starWIFIStatetListenter()
+            mClockBinder.startLocationListener(listener)
+        }
+
         fun stopForeground() = stop()
+        @SuppressLint("MissingPermission")
+        fun startLocationListener(listener: ColockOnLocationChangeListener) {
+            this@ColockSevice.mColockOnLocationChangeListener = listener
+            LocationUtils.register(0, 1, object : LocationUtils.OnLocationChangeListener {
+                override fun onLocationChanged(location: Location?) {
+                    if (lastLocation != null)
+                        Log.i("DistanceTo", location?.distanceTo(lastLocation).toString())
+                    lastLocation = location
+                }
+
+                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+                    when (status) {
+                        LocationProvider.AVAILABLE -> {
+                            Log.d("LocationUtils", "当前GPS状态为可见状态")
+                            mColockOnLocationChangeListener.enableGps()
+                        }
+                        LocationProvider.OUT_OF_SERVICE -> {
+//                            mColockOnLocationChangeListener.disableGps()
+                            toast("当前GPS状态为服务区外状态")
+                            Log.d("LocationUtils", "当前GPS状态为服务区外状态")
+                        }
+                        LocationProvider.TEMPORARILY_UNAVAILABLE -> {
+                            mColockOnLocationChangeListener.disableGps()
+                            Log.d("LocationUtils", "当前GPS状态为暂停服务状态")
+                        }
+                    }
+                }
+
+                override fun getLastKnownLocation(location: Location?) {
+                    Log.i("LocationUtils", "getLastKnownLocation=========${location?.toString()}")
+                }
+            })
+        }
+
+        fun starWIFIStatetListenter() {
+            registerReceiver(wifiStateReceiver, IntentFilter().apply { addAction(WifiManager.WIFI_STATE_CHANGED_ACTION) })
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        play()
         return START_STICKY
     }
 
-    override fun onStart(intent: Intent?, startId: Int) {
-        super.onStart(intent, startId)
-    }
-
     override fun onDestroy() {
-        super.onDestroy()
         stop()
+        super.onDestroy()
     }
 
+    @SuppressLint("MissingPermission")
     private fun stop() {
         if (isPlay) {
             isPlay = false
-            //将服务从forefround状态中移走，使得系统可以在低内存的情况下清除它。
+            //将服务从foreground状态中移走，使得系统可以在低内存的情况下清除它。
             stopForeground(true)
+            unregisterReceiver(wifiStateReceiver)
+            LocationUtils.unregister()
+            intervalSb?.unsubscribe()
         }
     }
 

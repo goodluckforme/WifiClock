@@ -114,6 +114,15 @@
                 android:text="@string/ClockWork"
                 android:textColor="@color/white" />
 
+            <Button
+                android:id="@+id/ChooseWorkPoint"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_40dp"
+                android:layout_margin="@dimen/dimen_5dp"
+                android:background="@drawable/main_button_selector"
+                android:text="@string/ChooseWorkPoint"
+                android:textColor="@color/white" />
+
             <Switch
                 android:id="@+id/AutoClock"
                 android:layout_width="wrap_content"

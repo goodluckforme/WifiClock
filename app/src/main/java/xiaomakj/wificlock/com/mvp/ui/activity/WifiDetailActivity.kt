@@ -1,5 +1,7 @@
 package xiaomakj.wificlock.com.mvp.ui.activity
 
+import android.app.Activity
+import android.content.Intent
 import xiaomakj.wificlock.com.mvp.ui.base.BaseActivity
 import xiaomakj.wificlock.com.mvp.presenter.WifiDetailPresenter
 import xiaomakj.wificlock.com.mvp.contract.WifiDetailContract
@@ -8,6 +10,7 @@ import xiaomakj.wificlock.com.component.DaggerWifiDetailComponent
 import xiaomakj.wificlock.com.databinding.ActivityWifiDetailBinding
 import xiaomakj.wificlock.com.R
 import android.databinding.DataBindingUtil
+import android.util.Log
 
 class WifiDetailActivity : BaseActivity<WifiDetailPresenter, WifiDetailContract.View, ActivityWifiDetailBinding>(), WifiDetailContract.View {
     override fun getNameId(): Int = R.string.wifi_detail
@@ -38,4 +41,5 @@ class WifiDetailActivity : BaseActivity<WifiDetailPresenter, WifiDetailContract.
     override fun showError(msg: String) {
 
     }
+
 }

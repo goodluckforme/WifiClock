@@ -41,8 +41,8 @@ abstract class BaseActivity<T : RxPresenter<V, M>, V : BaseContract.BaseView, M 
     }
 
     protected open fun initView() {
-        head_back.onClick { finish() }
-        head_title.setText(getNameId())
+        head_back?.onClick { finish() }
+        head_title?.setText(getNameId())
     }
 
     abstract fun getNameId(): Int
