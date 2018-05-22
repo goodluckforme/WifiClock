@@ -2,12 +2,10 @@ package xiaomakj.wificlock.com.mvp.presenter
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ComponentName
-import android.content.Context
+import android.app.Activity
+import android.content.*
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.content.Context.WIFI_SERVICE
-import android.content.Intent
-import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.wifi.ScanResult
@@ -47,9 +45,20 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
         RxPresenter<MainContract.View, ActivityMainBinding>(), MainContract.Presenter, ColockSevice.ColockOnLocationChangeListener {
     lateinit var baseReclyerViewAdapter: CommonRecycleViewAdapter<ScanResult>
     lateinit var mClockBinder: ColockSevice.ClockBinder
+    var choose_place_br: BroadcastReceiver? = null
     @SuppressLint("WifiManagerLeak")
     override fun getPermission() {
         val mainActivity = mView as MainActivity
+        if (choose_place_br == null) {
+            choose_place_br = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    mainActivity.launchActivity<ChooseWorkPointActivity>(1102) {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    }
+                }
+            }
+            mainActivity.registerReceiver(choose_place_br, IntentFilter("COLOCKSEVICE_NEED_WORK_PLACE"))
+        }
         WifiUtils.enableLog(true)
         mContentView.OpenWifi.onClick {
             WifiUtils.withContext(mainActivity).enableWifi(object : WifiStateListener {
@@ -134,6 +143,7 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
         mContentView.ClockWork.onClick {
             appApi.getTest(object : BaseObserver<List<TestDatas>>(mainActivity) {
                 override fun onRequestFail(e: Throwable) {
+                    mainActivity.toast(e.message.toString())
                 }
 
                 override fun onNetSuccess(result: List<TestDatas>) {
@@ -297,6 +307,8 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
     @SuppressLint("MissingPermission")
     override fun detachView() {
         super.detachView()
+        val mainActivity = mView as MainActivity
+        mainActivity.unregisterReceiver(choose_place_br ?: return)
         LocationUtils.unregister()
     }
 

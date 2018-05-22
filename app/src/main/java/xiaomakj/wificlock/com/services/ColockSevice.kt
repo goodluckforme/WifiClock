@@ -2,38 +2,37 @@ package xiaomakj.wificlock.com.services
 
 import android.annotation.SuppressLint
 import android.app.Notification
-import android.app.Service
-import android.content.Intent
-import android.os.Binder
-import android.os.IBinder
 import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.location.Location
 import android.location.LocationProvider
 import android.net.ConnectivityManager
-import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
+import android.os.Binder
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import com.thanosfisherman.wifiutils.WifiUtils
-import com.thanosfisherman.wifiutils.wifiConnect.ConnectionScanResultsListener
-import com.thanosfisherman.wifiutils.wifiConnect.ConnectionSuccessListener
 import com.thanosfisherman.wifiutils.wifiState.WifiStateCallback
 import com.thanosfisherman.wifiutils.wifiState.WifiStateReceiver
-import org.jetbrains.anko.collections.forEachByIndex
+import org.jetbrains.anko.alert
 import org.jetbrains.anko.toast
 import rx.Observable
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import xiaomakj.wificlock.com.App
 import xiaomakj.wificlock.com.R
-import xiaomakj.wificlock.com.mvp.ui.activity.MainActivity
+import xiaomakj.wificlock.com.api.AppApi
+import xiaomakj.wificlock.com.api.BaseObserver
+import xiaomakj.wificlock.com.data.TestDatas
+import xiaomakj.wificlock.com.mvp.ui.activity.ChooseWorkPointActivity
 import xiaomakj.wificlock.com.utils.LocationUtils
 import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
-import rx.functions.Action1
-import rx.android.schedulers.AndroidSchedulers
-import rx.internal.operators.OperatorReplay.observeOn
-import xiaomakj.wificlock.com.App
 import xiaomakj.wificlock.com.utils.Utils
+import xiaomakj.wificlock.com.utils.launchActivity
 import java.util.concurrent.TimeUnit
 
 
@@ -100,8 +99,18 @@ class ColockSevice : Service() {
                                             toast("测量WIFI和手机的距离为" + wifiDistance)
                                             if (wifiDistance < 20) {
                                                 toast("WIFI和手机的距离是否小于20m,尝试自动打卡")
-//                                                intervalSb?.unsubscribe()
-                                                toast("服务器无响应,请联系马齐383930056@qq.com")
+                                                AppApi.instance.getTest(object : BaseObserver<List<TestDatas>>(this@ColockSevice) {
+                                                    override fun onRequestFail(e: Throwable) {
+//                                                        this@ColockSevice.toast(e.message.toString())
+                                                        toast("服务器无响应,请联系马齐383930056@qq.com")
+                                                    }
+
+                                                    override fun onNetSuccess(result: List<TestDatas>) {
+                                                        val message = result[0].post_owner + "打卡成功"
+                                                        this@ColockSevice.toast(message)
+                                                        intervalSb?.unsubscribe()
+                                                    }
+                                                })
                                             }
                                         } else {
                                             toast("连接公司WIFI失败 请尝试手动打卡")
@@ -110,9 +119,11 @@ class ColockSevice : Service() {
                         } else {
                             toast("距离打卡地点${distanceOfTwoPoints}米")
                         }
+                    } else {
+                        toast("请选择您的上班地点")
+                        sendBroadcast(Intent("COLOCKSEVICE_NEED_WORK_PLACE"))
                     }
                 }
-
     }
 
     @SuppressLint("WifiManagerLeak")
@@ -217,7 +228,7 @@ class ColockSevice : Service() {
             //和上一笔记中创建通知的步骤一样，只是不需要通过通知管理器进行触发，而是用startForeground(ID,notify)来处理
             //步骤1：和上一笔记一样，通过Notification.Builder( )来创建通知
             //FakePlayer就是两个大button的activity，也即服务的界面，见最左图
-            val i = Intent(this, MainActivity::class.java)
+            val i = Intent(this, this@ColockSevice::class.java)
             //注意Intent的flag设置：FLAG_ACTIVITY_CLEAR_TOP: 如果activity已在当前任务中运行，在它前端的activity都会被关闭，它就成了最前端的activity。FLAG_ACTIVITY_SINGLE_TOP: 如果activity已经在最前端运行，则不需要再加载。设置这两个flag，就是让一个且唯一的一个activity（服务界面）运行在最前端。
             i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             val pi = PendingIntent.getActivity(this, 0, i, 0)

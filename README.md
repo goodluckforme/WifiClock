@@ -18,6 +18,10 @@
 忘深的想确实有点黑。。。
 走走看看吧,毕竟这不是一个小项目。
 
+
+2018/05/22 我们的自动打卡逻辑已经完成  且可在后台自动检索指定WIFI 测距 准确率高达100% 
+接下来我们将进一步完善 PHP后台逻辑  并加入人员管理 打卡记录两张表 
+
  /**
      * 先分析一下 自动打卡的条件
      * 1.WIFI连上后
@@ -42,3 +46,4 @@ https://github.com/ThanosFisherman/WifiUtils
 
 参考获取路由器MAC地址
 https://blog.csdn.net/crazyman2010/article/details/50464256
+
