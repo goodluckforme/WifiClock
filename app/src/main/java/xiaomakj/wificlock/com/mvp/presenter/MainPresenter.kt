@@ -23,11 +23,13 @@ import com.thanosfisherman.wifiutils.wifiState.WifiStateListener
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import xiaomakj.wificlock.com.App
 import xiaomakj.wificlock.com.R
 import xiaomakj.wificlock.com.api.AppApi
 import xiaomakj.wificlock.com.api.BaseObserver
 import xiaomakj.wificlock.com.common.RxPresenter
 import xiaomakj.wificlock.com.data.TestDatas
+import xiaomakj.wificlock.com.data.WifiParams
 import xiaomakj.wificlock.com.databinding.ActivityMainBinding
 import xiaomakj.wificlock.com.mvp.contract.MainContract
 import xiaomakj.wificlock.com.mvp.ui.activity.ChooseWorkPointActivity
@@ -36,6 +38,7 @@ import xiaomakj.wificlock.com.mvp.ui.activity.WifiDetailActivity
 import xiaomakj.wificlock.com.services.ColockSevice
 import xiaomakj.wificlock.com.utils.LocationUtils
 import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
+import xiaomakj.wificlock.com.utils.Utils
 import xiaomakj.wificlock.com.utils.launchActivity
 import javax.inject.Inject
 import kotlin.experimental.and
@@ -141,20 +144,49 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
             SharedPreferencesUtil.instance?.putBoolean("AutoClock", isChecked)
         }
         mContentView.ClockWork.onClick {
-            appApi.getTest(object : BaseObserver<List<TestDatas>>(mainActivity) {
-                override fun onRequestFail(e: Throwable) {
-                    mainActivity.toast(e.message.toString())
-                }
-
-                override fun onNetSuccess(result: List<TestDatas>) {
-                    mainActivity.alert {
-                        message = result[0].post_owner + "打卡成功"
-                        positiveButton("确定") {
-
+            //                appApi.getTest(object : BaseObserver<List<TestDatas>>(mainActivity) {
+//                override fun onRequestFail(e: Throwable) {
+//                    mainActivity.toast(e.message.toString())
+//                }
+//
+//                override fun onNetSuccess(result: List<TestDatas>) {
+//                    mainActivity.alert {
+//                        message = result[0].post_owner + "打卡成功"
+//                        positiveButton("确定") {
+//
+//                        }
+//                    }.show()
+//                }
+//            })
+            val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
+            if (!coordinate.contains(",")) return@onClick
+            val currentAmapLocation = App.instance.amapLocation ?: return@onClick
+            val split = coordinate.split(",")
+            val wifiManager = mainActivity.getSystemService(WIFI_SERVICE) as WifiManager
+            val disByRssi = DisByRssi(wifiManager.connectionInfo.rssi)
+            val distanceOfTwoPoints = Utils.DistanceOfTwoPoints(currentAmapLocation.latitude, currentAmapLocation.longitude, split[0].toDouble(), split[1].toDouble()) * 1000
+            appApi.addClockRecord(
+                    WifiParams("1",
+                            App.instance.amapLocation?.street ?: "",
+                            App.instance.amapLocation?.latitude ?: 0.0,
+                            App.instance.amapLocation?.longitude ?: 0.0,
+                            wifiManager.connectionInfo.ssid,
+                            disByRssi.toInt(),
+                            distanceOfTwoPoints.toInt()),
+                    object : BaseObserver<Any>(mainActivity) {
+                        override fun onRequestFail(e: Throwable) {
+                            mainActivity.toast(e.message.toString())
                         }
-                    }.show()
-                }
-            })
+
+                        override fun onNetSuccess(result: Any) {
+                            mainActivity.alert {
+                                message = "打卡成功"
+                                positiveButton("确定") {
+
+                                }
+                            }.show()
+                        }
+                    })
         }
         mContentView.ChooseWorkPoint.onClick {
             mainActivity.launchActivity<ChooseWorkPointActivity>(1102)
@@ -197,7 +229,7 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
         return b
     }
 
-    fun DisByRssi(rssi: Int): Double? {
+    fun DisByRssi(rssi: Int): Double {
         val iRssi = Math.abs(rssi)
         val power = (iRssi - 35) / (10 * 2.1)
         return Math.pow(10.0, power)

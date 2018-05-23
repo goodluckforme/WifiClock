@@ -21,8 +21,8 @@ abstract class BaseObserver<T>(val context: Context) : Observer<HttpResult<T>> {
     override fun onNext(result: HttpResult<T>?) {
         when {
             result == null -> onRequestFail()
-            result.code == SUCCESS -> onNetSuccess(result.data)
-            result.code == FAILLOGIN -> {
+            result.result == SUCCESS -> onNetSuccess(result.datas)
+            result.result == FAILLOGIN -> {
                 SharedPreferencesUtil.instance?.remove(USERINFO)
                 onRequestFail(Throwable("$FAILLOGIN"))
             }

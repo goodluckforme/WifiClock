@@ -7,7 +7,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 import rx.Observable
-import java.net.URLConnection
 import java.util.*
 
 /**
@@ -85,5 +84,18 @@ interface AppService {
     ): Observable<HttpResult<Any>>
 
     @GET(TEST)
-    fun getTEST(): Observable<HttpResult<List<TestDatas> >>
+    fun getTEST(): Observable<HttpResult<List<TestDatas>>>
+
+
+    @POST(ADDCLOCKRECORD)
+    @FormUrlEncoded
+    fun addClockRecord(
+            @Field("admin_id") admin_id: String,
+            @Field("clock_place") clock_place: String,
+            @Field("lat") lat: Double,
+            @Field("lon") lon: Double,
+            @Field("wifiname") wifiname: String,
+            @Field("wifi_distance") wifi_distance: Int,
+            @Field("gps_distance") gps_distance: Int
+    ): Observable<HttpResult<Any>>
 }

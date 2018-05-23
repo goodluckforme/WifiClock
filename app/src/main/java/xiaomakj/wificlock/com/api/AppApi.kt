@@ -13,8 +13,8 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xiaomakj.wificlock.com.common.BASEURL
-import xiaomakj.wificlock.com.data.HttpResult
 import xiaomakj.wificlock.com.data.TestDatas
+import xiaomakj.wificlock.com.data.WifiParams
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -71,5 +71,19 @@ class AppApi private constructor() {
     //测试我搭建的PHP平台
     fun getTest(observer: BaseObserver<List<TestDatas>>): Subscription? {
         return observer(observer, appService.getTEST())
+    }
+
+
+    //测试我搭建的PHP平台
+    fun addClockRecord(wifiParams: WifiParams, observer: BaseObserver<Any>): Subscription? {
+        return observer(observer, appService.addClockRecord(
+                wifiParams.admin_id,
+                wifiParams.clock_place,
+                wifiParams.lat,
+                wifiParams.lon,
+                wifiParams.wifiname,
+                wifiParams.wifi_distance,
+                wifiParams.gps_distance
+        ))
     }
 }
