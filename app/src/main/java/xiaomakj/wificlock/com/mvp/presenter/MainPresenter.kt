@@ -2,11 +2,11 @@ package xiaomakj.wificlock.com.mvp.presenter
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.*
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.content.Context.WIFI_SERVICE
 import android.content.pm.PackageManager
+import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
@@ -14,21 +14,27 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
 import com.aspsine.irecyclerview.universaladapter.ViewHolderHelper
 import com.aspsine.irecyclerview.universaladapter.recyclerview.CommonRecycleViewAdapter
 import com.thanosfisherman.wifiutils.WifiUtils
 import com.thanosfisherman.wifiutils.wifiScan.ScanResultsListener
 import com.thanosfisherman.wifiutils.wifiState.WifiStateListener
+import kotlinx.android.synthetic.main.header.view.*
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onCheckedChange
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.sdk25.coroutines.onLongClick
 import xiaomakj.wificlock.com.App
 import xiaomakj.wificlock.com.R
 import xiaomakj.wificlock.com.api.AppApi
 import xiaomakj.wificlock.com.api.BaseObserver
 import xiaomakj.wificlock.com.common.RxPresenter
-import xiaomakj.wificlock.com.data.TestDatas
+import xiaomakj.wificlock.com.data.LoginDatas
 import xiaomakj.wificlock.com.data.WifiParams
 import xiaomakj.wificlock.com.databinding.ActivityMainBinding
 import xiaomakj.wificlock.com.mvp.contract.MainContract
@@ -49,9 +55,12 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
     lateinit var baseReclyerViewAdapter: CommonRecycleViewAdapter<ScanResult>
     lateinit var mClockBinder: ColockSevice.ClockBinder
     var choose_place_br: BroadcastReceiver? = null
-    @SuppressLint("WifiManagerLeak")
+    lateinit var loginDatas: LoginDatas.Userinfo
+
     override fun getPermission() {
         val mainActivity = mView as MainActivity
+        loginDatas = SharedPreferencesUtil.instance?.getObject("USERINFO", LoginDatas.Userinfo::class.java) ?: return
+        mainActivity.toast("欢迎：${loginDatas.nickname}")
         if (choose_place_br == null) {
             choose_place_br = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
@@ -63,69 +72,16 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
             mainActivity.registerReceiver(choose_place_br, IntentFilter("COLOCKSEVICE_NEED_WORK_PLACE"))
         }
         WifiUtils.enableLog(true)
-        mContentView.OpenWifi.onClick {
-            WifiUtils.withContext(mainActivity).enableWifi(object : WifiStateListener {
-                override fun isSuccess(isSuccess: Boolean) {
-                    mainActivity.toast("Wifi连接上了吗？===$isSuccess")
-                }
-            })
+        mContentView.mainHead.head_right.onClick {
+            showSellerPop()
         }
-        mContentView.SetWifiListener.onClick {
-            mClockBinder.starWIFIStatetListenter()
-        }
-        mContentView.CloseWifi.onClick {
-            WifiUtils.withContext(mainActivity).disableWifi()
-        }
-        mContentView.getWiftList.onClick {
-            mainActivity.dailog.apply {
-                setMessage(mainActivity.getString(R.string.loading))
-                show()
-            }
-            WifiUtils.withContext(mainActivity).scanWifi(object : ScanResultsListener {
-                override fun onScanResults(scanResults: MutableList<ScanResult>) {
-                    //Log.i("onScanResults", scanResults.toString())
-                    baseReclyerViewAdapter.replaceAll(scanResults)
-                    mainActivity.dailog.dismiss()
-                }
-            }).start()
-        }
-        mContentView.ConnectWithWpa.onClick {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                baseReclyerViewAdapter.mDatas.forEachIndexed { index, scanResult ->
-                    if (!scanResult.SSID.isEmpty() && scanResult.SSID.contains("chuyukeji")) {
-                        WifiUtils.withContext(mainActivity).
-                                connectWith(scanResult.SSID, "chuyukeji302")
-                                .onConnectionResult { isSuccess -> mainActivity.toast("连接${scanResult.SSID}${if (isSuccess) "成功" else "失败"}") }
-                                .start()
-                        return@onClick
-                    }
-                }
-            }
-        }
-        mContentView.OpenGPS.onClick {
-            mClockBinder.startLocationListener(this@MainPresenter)
-        }
-        mContentView.ConnectDistance.onClick {
-            val wifiManager = mainActivity.getSystemService(WIFI_SERVICE) as WifiManager
-            val connectManager = mainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-            val netInfo = connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-            val dhcpInfo = wifiManager.getDhcpInfo()
-            val wifiInfo = wifiManager.getConnectionInfo()
-            val list = wifiManager.getScanResults() as List<android.net.wifi.ScanResult>
-            val wifiProperty = "当前连接WIFI信息如下:" + wifiInfo.getSSID() + '\n' +
-                    "ip:" + FormatString(dhcpInfo.ipAddress) + '\n' +
-                    "mask:" + FormatString(dhcpInfo.netmask) + '\n' +
-                    "netgate:" + FormatString(dhcpInfo.gateway) + '\n' +
-                    "dns:" + FormatString(dhcpInfo.dns1) + '\n' +
-                    "rssi:" + wifiInfo.getRssi() + '\n' +
-                    DisByRssi(wifiInfo.getRssi())
-            mContentView.WifiInfoTV.text = wifiProperty
-        }
+        mContentView.mainHead.head_right.visibility = View.VISIBLE
         val intent = Intent(mainActivity, ColockSevice::class.java)
         mainActivity.startService(intent)
         mainActivity.bindService(intent, object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                 mClockBinder = service as ColockSevice.ClockBinder
+                mClockBinder.startLocationListener(this@MainPresenter)
                 mContentView.AutoClock.isChecked = SharedPreferencesUtil.instance?.getBoolean("AutoClock", false) == true
             }
 
@@ -135,7 +91,6 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
 
         }, Context.BIND_AUTO_CREATE)
         mContentView.AutoClock.onCheckedChange { _, isChecked ->
-            mainActivity.toast("isChecked===================$isChecked")
             if (isChecked) {
                 mClockBinder.startForeground(this@MainPresenter)
             } else {
@@ -143,60 +98,149 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
             }
             SharedPreferencesUtil.instance?.putBoolean("AutoClock", isChecked)
         }
-        mContentView.ClockWork.onClick {
-            //                appApi.getTest(object : BaseObserver<List<TestDatas>>(mainActivity) {
-//                override fun onRequestFail(e: Throwable) {
-//                    mainActivity.toast(e.message.toString())
-//                }
-//
-//                override fun onNetSuccess(result: List<TestDatas>) {
-//                    mainActivity.alert {
-//                        message = result[0].post_owner + "打卡成功"
-//                        positiveButton("确定") {
-//
-//                        }
-//                    }.show()
-//                }
-//            })
-            val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
-            if (!coordinate.contains(",")) return@onClick
-            val currentAmapLocation = App.instance.amapLocation ?: return@onClick
-            val split = coordinate.split(",")
-            val wifiManager = mainActivity.getSystemService(WIFI_SERVICE) as WifiManager
-            val disByRssi = DisByRssi(wifiManager.connectionInfo.rssi)
-            val distanceOfTwoPoints = Utils.DistanceOfTwoPoints(currentAmapLocation.latitude, currentAmapLocation.longitude, split[0].toDouble(), split[1].toDouble()) * 1000
-            appApi.addClockRecord(
-                    WifiParams("1",
-                            App.instance.amapLocation?.street ?: "",
-                            App.instance.amapLocation?.latitude ?: 0.0,
-                            App.instance.amapLocation?.longitude ?: 0.0,
-                            wifiManager.connectionInfo.ssid,
-                            disByRssi.toInt(),
-                            distanceOfTwoPoints.toInt()),
-                    object : BaseObserver<Any>(mainActivity) {
-                        override fun onRequestFail(e: Throwable) {
-                            mainActivity.toast(e.message.toString())
-                        }
+    }
 
-                        override fun onNetSuccess(result: Any) {
-                            mainActivity.alert {
-                                message = "打卡成功"
-                                positiveButton("确定") {
+    var mPopupWindow: PopupWindow? = null
 
+    private fun showSellerPop() {
+        val mainActivity = mView as MainActivity
+        if (mPopupWindow == null)
+            mPopupWindow = PopupWindow(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                val inflate = View.inflate(mainActivity, R.layout.layout_popwin_menu_list, null)
+                setBackgroundDrawable(ColorDrawable())
+                contentView = inflate
+                val recyclerView = inflate.find<RecyclerView>(R.id.popwin_list_view)
+                recyclerView?.layoutManager = LinearLayoutManager(mainActivity)
+                recyclerView.hasFixedSize()
+                val sellerAdapter = object : CommonRecycleViewAdapter<String>(mainActivity, R.layout.item_popwin_list, arrayListOf(
+                        "获取WIFI列表",
+                        "WIFI状态监听",
+                        "打开WIFI",
+                        "打开GPS",
+                        "关闭WIFI",
+                        "连接WIFI",
+                        "WIFI的信息",
+                        "打卡上班",
+                        "选择上班地点"
+                )) {
+                    @SuppressLint("WifiManagerLeak")
+                    override fun convert(helper: ViewHolderHelper?, good: String, position: Int) {
+                        val textView = helper?.getView<TextView>(R.id.item_tv)
+                        textView?.text = good
+                        textView?.onClick {
+                            when (position) {
+                                0 -> {
+                                    mainActivity.dailog.apply {
+                                        setMessage(mainActivity.getString(R.string.loading))
+                                        show()
+                                    }
+                                    WifiUtils.withContext(mainActivity).scanWifi { scanResults ->
+                                        baseReclyerViewAdapter.replaceAll(scanResults)
+                                        mainActivity.dailog.dismiss()
+                                    }.start()
                                 }
-                            }.show()
+                                1 -> {
+                                    mClockBinder.starWIFIStatetListenter()
+                                }
+                                2 -> {
+                                    WifiUtils.withContext(mainActivity).enableWifi(object : WifiStateListener {
+                                        override fun isSuccess(isSuccess: Boolean) {
+                                            mainActivity.toast("Wifi连接上了吗？===$isSuccess")
+                                        }
+                                    })
+                                }
+                                3 -> {
+                                    toEnableGPS()
+                                }
+                                4 -> {
+                                    WifiUtils.withContext(mainActivity).disableWifi()
+                                }
+                                5 -> {
+                                    val mSSID = SharedPreferencesUtil.instance?.getString("WORK_SSID") ?: ""
+                                    val mBSSID = SharedPreferencesUtil.instance?.getString("WORK_BSSID") ?: ""
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        mainActivity.dailog.show()
+                                        WifiUtils.withContext(mainActivity).
+                                                connectWith(mSSID, "chuyukeji302")
+                                                .onConnectionResult { isSuccess ->
+                                                    mainActivity.dailog.dismiss()
+                                                    mainActivity.toast("连接${mSSID}${if (isSuccess) "成功" else "失败"}")
+                                                }
+                                                .start()
+                                    }
+                                }
+                                6 -> {
+                                    val wifiManager = mainActivity.getSystemService(WIFI_SERVICE) as WifiManager
+                                    val connectManager = mainActivity.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+                                    val netInfo = connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
+                                    val dhcpInfo = wifiManager.getDhcpInfo()
+                                    val wifiInfo = wifiManager.getConnectionInfo()
+                                    val list = wifiManager.getScanResults() as List<android.net.wifi.ScanResult>
+                                    val wifiProperty = "当前连接WIFI信息如下:" + wifiInfo.getSSID() + '\n' +
+                                            "ip:" + FormatString(dhcpInfo.ipAddress) + '\n' +
+                                            "mask:" + FormatString(dhcpInfo.netmask) + '\n' +
+                                            "netgate:" + FormatString(dhcpInfo.gateway) + '\n' +
+                                            "dns:" + FormatString(dhcpInfo.dns1) + '\n' +
+                                            "rssi:" + wifiInfo.getRssi() + '\n' +
+                                            DisByRssi(wifiInfo.getRssi())
+                                    mainActivity.alert("$wifiProperty", wifiInfo.ssid) {
+                                        positiveButton("确定") {}
+                                    }.show()
+                                }
+                                7 -> {
+                                    val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
+                                    if (!coordinate.contains(",")) return@onClick
+                                    val currentAmapLocation = App.instance.amapLocation ?: return@onClick
+                                    val split = coordinate.split(",")
+                                    val wifiManager = mainActivity.getSystemService(WIFI_SERVICE) as WifiManager
+                                    val disByRssi = DisByRssi(wifiManager.connectionInfo.rssi)
+                                    val distanceOfTwoPoints = Utils.DistanceOfTwoPoints(currentAmapLocation.latitude, currentAmapLocation.longitude, split[0].toDouble(), split[1].toDouble()) * 1000
+                                    appApi.addClockRecord(
+                                            WifiParams(loginDatas.user_id.toString(),
+                                                    App.instance.amapLocation?.address ?: "",
+                                                    App.instance.amapLocation?.latitude ?: 0.0,
+                                                    App.instance.amapLocation?.longitude ?: 0.0,
+                                                    wifiManager.connectionInfo.ssid,
+                                                    disByRssi.toInt(),
+                                                    distanceOfTwoPoints.toInt()),
+                                            object : BaseObserver<Any>(mainActivity) {
+                                                override fun onRequestFail(e: Throwable) {
+                                                    mainActivity.toast(e.message.toString())
+                                                }
+
+                                                override fun onNetSuccess(result: Any) {
+                                                    mainActivity.alert {
+                                                        message = "打卡成功"
+                                                        positiveButton("确定") {
+
+                                                        }
+                                                    }.show()
+                                                }
+                                            })
+                                }
+                                8 -> {
+                                    mainActivity.launchActivity<ChooseWorkPointActivity>(1102)
+                                }
+                            }
                         }
-                    })
-        }
-        mContentView.ChooseWorkPoint.onClick {
-            mainActivity.launchActivity<ChooseWorkPointActivity>(1102)
-        }
+                    }
+                }
+                recyclerView?.adapter = sellerAdapter
+                isFocusable = true
+                isOutsideTouchable = true
+            }
+        mPopupWindow?.showAsDropDown(mContentView.mainHead.head_right, 0, 0)
     }
 
     override fun enableGps() {
+
     }
 
     override fun disableGps() {
+        toEnableGPS()
+    }
+
+    private fun toEnableGPS() {
         val mainActivity = mView as MainActivity
         if (!LocationUtils.isGpsEnabled()) {
             mainActivity.alert("API22以上的手机只有开启GPS后才有能力获取WIFI信息") {
@@ -205,7 +249,8 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                 }
                 negativeButton("拒绝") {}
             }.show()
-        }
+        } else mainActivity.toast("GPS已经卡其")
+
     }
 
     fun FormatString(value: Int): String {
@@ -249,9 +294,36 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
         mContentView.layoutManager = LinearLayoutManager(context)
         baseReclyerViewAdapter = object : CommonRecycleViewAdapter<ScanResult>(context, R.layout.wifi_item) {
             override fun convert(helper: ViewHolderHelper?, t: ScanResult?, position: Int) {
-                val wifiName = t?.SSID ?: "未知"
+                val wifiName = t?.SSID ?: ""
                 val BSSID = t?.BSSID ?: ""
-                helper?.getView<TextView>(R.id.wifi_name)?.text = wifiName
+                helper?.getView<TextView>(R.id.wifi_name)?.text = if (wifiName.isEmpty()) {
+                    "未知"
+                } else wifiName
+                helper?.convertView?.onLongClick {
+                    val mSSID = SharedPreferencesUtil.instance?.getString("WORK_SSID")
+                    val mBSSID = SharedPreferencesUtil.instance?.getString("WORK_BSSID")
+                    if (wifiName == mSSID && BSSID == mBSSID)
+                        mainActivity.
+                                alert("是否删除常用打卡点:${wifiName}", wifiName) {
+                                    positiveButton("是") {
+                                        SharedPreferencesUtil.instance?.putString("WORK_SSID", "")
+                                        SharedPreferencesUtil.instance?.putString("WORK_BSSID", "")
+                                    }
+                                    negativeButton("否") {
+
+                                    }
+                                }.show()
+                    else mainActivity.
+                            alert("是否设置:${wifiName}为常用打卡点", wifiName) {
+                                positiveButton("是") {
+                                    SharedPreferencesUtil.instance?.putString("WORK_SSID", wifiName)
+                                    SharedPreferencesUtil.instance?.putString("WORK_BSSID", BSSID)
+                                }
+                                negativeButton("否") {
+
+                                }
+                            }.show()
+                }
                 helper?.convertView?.onClick {
                     mainActivity.
                             alert("BSSID:$BSSID", wifiName) {

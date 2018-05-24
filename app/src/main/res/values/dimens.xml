@@ -56,4 +56,5 @@
     <dimen name="dimen_10sp">10sp</dimen>
     <dimen name="dimen_168dp">168dp</dimen>
     <dimen name="dimen_80dp">80dp</dimen>
+    <dimen name="font_size_12">12sp</dimen>
 </resources>

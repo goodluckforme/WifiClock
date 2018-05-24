@@ -63,8 +63,8 @@ class MainActivity : BaseActivity<MainPresenter, MainContract.View, ActivityMain
             val coordinate = data?.getStringExtra("coordinate") ?: ""
             Log.i("onActivityResult", "formatAddress===========" + formatAddress)
             Log.i("onActivityResult", "coordinate===========" + coordinate)
-            ChooseWorkPoint.text = formatAddress
             SharedPreferencesUtil.instance?.putString("coordinate", coordinate)
+            SharedPreferencesUtil.instance?.putString("formatAddress", coordinate)
         }
     }
 }

@@ -27,7 +27,9 @@ import xiaomakj.wificlock.com.App
 import xiaomakj.wificlock.com.R
 import xiaomakj.wificlock.com.api.AppApi
 import xiaomakj.wificlock.com.api.BaseObserver
+import xiaomakj.wificlock.com.data.LoginDatas
 import xiaomakj.wificlock.com.data.TestDatas
+import xiaomakj.wificlock.com.data.WifiParams
 import xiaomakj.wificlock.com.mvp.ui.activity.ChooseWorkPointActivity
 import xiaomakj.wificlock.com.utils.LocationUtils
 import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
@@ -82,6 +84,12 @@ class ColockSevice : Service() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
+                    val mSSID = SharedPreferencesUtil.instance?.getString("WORK_SSID") ?: ""
+                    val mBSSID = SharedPreferencesUtil.instance?.getString("WORK_BSSID") ?: ""
+                    if (mSSID.isEmpty()){
+                        toast("请设置常用打卡地点")
+                        return@subscribe
+                    }
                     if (coordinate.contains(",")) {
                         val split = coordinate.split(",")
                         val currentAmapLocation = App.instance.amapLocation ?: return@subscribe
@@ -91,7 +99,7 @@ class ColockSevice : Service() {
                             //扫描并尝试连接Chuyukeji5.0
                             WifiUtils.withContext(applicationContext)
                                     .connectWithScanResult("chyukeji302") { scanResults ->
-                                        scanResults.firstOrNull { "chuyukeji2.4" == it.SSID }
+                                        scanResults.firstOrNull { mSSID == it.SSID }
                                     }
                                     .onConnectionResult { isSuccess ->
                                         if (isSuccess) {
@@ -99,18 +107,7 @@ class ColockSevice : Service() {
                                             toast("测量WIFI和手机的距离为" + wifiDistance)
                                             if (wifiDistance < 20) {
                                                 toast("WIFI和手机的距离是否小于20m,尝试自动打卡")
-                                                AppApi.instance.getTest(object : BaseObserver<List<TestDatas>>(this@ColockSevice) {
-                                                    override fun onRequestFail(e: Throwable) {
-//                                                        this@ColockSevice.toast(e.message.toString())
-                                                        toast("服务器无响应,请联系马齐383930056@qq.com")
-                                                    }
-
-                                                    override fun onNetSuccess(result: List<TestDatas>) {
-                                                        val message = result[0].post_owner + "打卡成功"
-                                                        this@ColockSevice.toast(message)
-                                                        intervalSb?.unsubscribe()
-                                                    }
-                                                })
+                                                toAddClockRecord()
                                             }
                                         } else {
                                             toast("连接公司WIFI失败 请尝试手动打卡")
@@ -127,6 +124,37 @@ class ColockSevice : Service() {
     }
 
     @SuppressLint("WifiManagerLeak")
+    private fun toAddClockRecord() {
+        val loginDatas = SharedPreferencesUtil.instance?.getObject("USERINFO", LoginDatas.Userinfo::class.java) ?: return
+        val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
+        if (!coordinate.contains(",")) return
+        val currentAmapLocation = App.instance.amapLocation ?: return
+        val split = coordinate.split(",")
+        val wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val disByRssi = DisByRssi(wifiManager.connectionInfo.rssi)
+        val distanceOfTwoPoints = Utils.DistanceOfTwoPoints(currentAmapLocation.latitude, currentAmapLocation.longitude, split[0].toDouble(), split[1].toDouble()) * 1000
+        AppApi.instance.addClockRecord(
+                WifiParams(loginDatas.user_id.toString(),
+                        App.instance.amapLocation?.address ?: "",
+                        App.instance.amapLocation?.latitude ?: 0.0,
+                        App.instance.amapLocation?.longitude ?: 0.0,
+                        wifiManager.connectionInfo.ssid,
+                        disByRssi?.toInt(),
+                        distanceOfTwoPoints.toInt()),
+                object : BaseObserver<Any>(this@ColockSevice) {
+                    override fun onRequestFail(e: Throwable) {
+                        toast(e.message.toString())
+                    }
+
+                    override fun onNetSuccess(result: Any) {
+                        //TODO 这里返回的是0 应该改成200
+                        intervalSb?.unsubscribe()
+                        toast("打卡成功")
+                    }
+                })
+    }
+
+    @SuppressLint("WifiManagerLeak")
     private fun getWIFIDistance(): Double {
         val wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
         val connectManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -137,7 +165,7 @@ class ColockSevice : Service() {
         return DisByRssi(wifiInfo.getRssi()) ?: 9999.0
     }
 
-    fun DisByRssi(rssi: Int): Double? {
+    fun DisByRssi(rssi: Int): Double {
         val iRssi = Math.abs(rssi)
         val power = (iRssi - 35) / (10 * 2.1)
         return Math.pow(10.0, power)
@@ -165,6 +193,7 @@ class ColockSevice : Service() {
         @SuppressLint("MissingPermission")
         fun startLocationListener(listener: ColockOnLocationChangeListener) {
             this@ColockSevice.mColockOnLocationChangeListener = listener
+            LocationUtils.unregister()
             LocationUtils.register(0, 1, object : LocationUtils.OnLocationChangeListener {
                 override fun onLocationChanged(location: Location?) {
                     if (lastLocation != null)

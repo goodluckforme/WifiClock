@@ -13,6 +13,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xiaomakj.wificlock.com.common.BASEURL
+import xiaomakj.wificlock.com.data.LoginDatas
 import xiaomakj.wificlock.com.data.TestDatas
 import xiaomakj.wificlock.com.data.WifiParams
 import java.io.File
@@ -84,6 +85,13 @@ class AppApi private constructor() {
                 wifiParams.wifiname,
                 wifiParams.wifi_distance,
                 wifiParams.gps_distance
+        ))
+    }
+
+    fun toLogin(account: String, psw: String, observer: BaseObserver<LoginDatas>): Subscription? {
+        return observer(observer, appService.login(
+                account,
+                psw
         ))
     }
 }

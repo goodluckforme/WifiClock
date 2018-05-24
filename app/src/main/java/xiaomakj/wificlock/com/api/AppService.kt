@@ -14,13 +14,13 @@ import java.util.*
  */
 interface AppService {
 
-    @POST("LOGIN")
+    @POST(LOGIN)
     @FormUrlEncoded
     fun login(
-            @Field("username") username: String,
+            @Field("account") username: String,
             @Field("password") password: String,
             @Field("client") client: String = "android"
-    ): Observable<HttpResult<Any>>
+    ): Observable<HttpResult<LoginDatas>>
 
 
     @POST("REGISTER")

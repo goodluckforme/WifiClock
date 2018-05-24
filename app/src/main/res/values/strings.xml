@@ -14,4 +14,10 @@
     <string name="ClockWork">打卡上班</string>
     <string name="AutoClock">自动打卡</string>
     <string name="ChooseWorkPoint">请选择上班地点</string>
+    <string name="login">登录</string>
+    <string name="tip_account">请输入账号(Email地址)</string>
+    <string name="tip_psw">请输入您的密码</string>
+    <string name="app_name_introduce">打卡大师</string>
+    <string name="app_right">Copyright © 1998 - 2018 xiaomakeji.com All Rights Reserved</string>
+    <string name="nullstring" />
 </resources>

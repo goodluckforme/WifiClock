@@ -3,6 +3,7 @@ package xiaomakj.wificlock.com.mvp.ui.activity
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_choose_work_point.*
+import kotlinx.android.synthetic.main.header.*
 import xiaomakj.wificlock.com.R
 import xiaomakj.wificlock.com.component.AppComponent
 import xiaomakj.wificlock.com.component.DaggerChooseWorkPointComponent
@@ -10,6 +11,7 @@ import xiaomakj.wificlock.com.databinding.ActivityChooseWorkPointBinding
 import xiaomakj.wificlock.com.mvp.contract.ChooseWorkPointContract
 import xiaomakj.wificlock.com.mvp.presenter.ChooseWorkPointPresenter
 import xiaomakj.wificlock.com.mvp.ui.base.BaseActivity
+import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
 
 class ChooseWorkPointActivity : BaseActivity<ChooseWorkPointPresenter, ChooseWorkPointContract.View, ActivityChooseWorkPointBinding>(), ChooseWorkPointContract.View {
     override fun getNameId(): Int = R.string.ChooseWorkPoint
@@ -25,6 +27,7 @@ class ChooseWorkPointActivity : BaseActivity<ChooseWorkPointPresenter, ChooseWor
     public override fun initView() {
         mPresenter.getLayoutRes(DataBindingUtil.setContentView<ActivityChooseWorkPointBinding>(this@ChooseWorkPointActivity, R.layout.activity_choose_work_point))
         super.initView()
+        head_title.text = SharedPreferencesUtil.instance?.getString("formatAddress", "").toString()
     }
 
     public override fun initData() {

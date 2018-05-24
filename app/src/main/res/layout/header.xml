@@ -9,6 +9,7 @@
         android:id="@+id/head_back"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:padding="@dimen/dimen_10dp"
         android:src="@mipmap/back" />
 
     <TextView
@@ -24,8 +25,18 @@
     <TextView
         android:id="@+id/head_right"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:padding="@dimen/dimen_5dp" />
+        android:drawableRight="@mipmap/menu2"
+        android:padding="@dimen/dimen_5dp"
+        android:paddingLeft="@dimen/dimen_10dp"
+        android:visibility="invisible" />
+
+    <View
+        android:id="@+id/head_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_F2F2F2"></View>
 </RelativeLayout>

@@ -1,0 +1,70 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="xiaomakj.wificlock.com.mvp.presenter.LoginPresenter.LoginModel" />
+
+        <variable
+            name="loginModel"
+            type="LoginModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_gradient"
+        android:orientation="vertical">
+
+        <include layout="@layout/header"></include>
+
+        <EditText
+            android:id="@+id/edAccound"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_80dp"
+            android:background="@drawable/edit_bg"
+            android:hint="@string/tip_account"
+            android:paddingLeft="@dimen/dimen_20dp"
+            android:text="much2"
+            android:textColorHint="@color/color_2F6879"
+            android:textSize="@dimen/font_size_16" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:background="@color/white"></View>
+
+        <EditText
+            android:id="@+id/edPsw"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:background="@drawable/edit_bg_down"
+            android:hint="@string/tip_psw"
+            android:inputType="textPassword"
+            android:paddingLeft="@dimen/dimen_20dp"
+            android:text="fastmuch"
+            android:textColorHint="@color/color_2F6879"
+            android:textSize="@dimen/font_size_16" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/LaLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:lottie_autoPlay="false"
+                app:lottie_fileName="animation-w512-h512.json"
+                app:lottie_loop="false" />
+        </FrameLayout>
+    </LinearLayout>
+</layout>

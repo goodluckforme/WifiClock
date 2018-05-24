@@ -26,113 +26,19 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/header"></include>
+        <include
+            android:id="@+id/main_head"
+            layout="@layout/header"></include>
 
-        <TextView
-            android:id="@+id/WifiInfoTV"
+        <Switch
+            android:id="@+id/AutoClock"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/WifiInfoTV" />
-
-        <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:alignContent="flex_start"
-            app:alignItems="center"
-            app:flexWrap="wrap">
-
-            <Button
-                android:id="@+id/getWiftList"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/getWiftList"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/SetWifiListener"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/SetWifiListener"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/OpenWifi"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/OpenWifi"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/OpenGPS"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/OpenGPS"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/CloseWifi"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/CloseWifi"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/ConnectWithWpa"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/ConnectWithWpa"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/ConnectDistance"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/ConnectDistance"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/ClockWork"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/ClockWork"
-                android:textColor="@color/white" />
-
-            <Button
-                android:id="@+id/ChooseWorkPoint"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:text="@string/ChooseWorkPoint"
-                android:textColor="@color/white" />
-
-            <Switch
-                android:id="@+id/AutoClock"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_margin="@dimen/dimen_5dp"
-                android:background="@drawable/main_button_selector"
-                android:padding="@dimen/dimen_5dp"
-                android:text="@string/AutoClock"
-                android:textColor="@color/white" />
-        </com.google.android.flexbox.FlexboxLayout>
+            android:layout_height="@dimen/dimen_40dp"
+            android:layout_margin="@dimen/dimen_5dp"
+            android:background="@drawable/main_button_selector"
+            android:padding="@dimen/dimen_5dp"
+            android:text="@string/AutoClock"
+            android:textColor="@color/white" />
 
         <com.aspsine.irecyclerview.IRecyclerView
             android:layout_width="match_parent"
