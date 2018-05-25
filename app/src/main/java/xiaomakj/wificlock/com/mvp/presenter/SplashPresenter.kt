@@ -30,6 +30,7 @@ class SplashPresenter @Inject constructor(private val appApi: AppApi, private va
             val userinfo = SharedPreferencesUtil.instance?.getObject("USERINFO", LoginDatas.Userinfo::class.java)
             if (null == userinfo || userinfo.token.isEmpty()) {
                 splashActivity.launchActivity<LoginActivity> { }
+                splashActivity.finish()
             } else {
                 splashActivity.launchActivity<MainActivity> { }
                 splashActivity.finish()

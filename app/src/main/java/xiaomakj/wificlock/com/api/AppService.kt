@@ -67,8 +67,9 @@ interface AppService {
     ): Observable<HttpResult<Any>>
 
     @Multipart
-    @POST("AVATAR")
+    @POST(UPLOAD)
     fun upload(
+            @Header("token") token: String,
             @Part("key") path: RequestBody,
             @Part file: MultipartBody.Part,
             @Part("client") client: RequestBody
@@ -97,5 +98,22 @@ interface AppService {
             @Field("wifiname") wifiname: String,
             @Field("wifi_distance") wifi_distance: Int,
             @Field("gps_distance") gps_distance: Int
+    ): Observable<HttpResult<Any>>
+
+
+    @POST(GETCLOCKRECORD)
+    @FormUrlEncoded
+    fun getClockRecord(
+            @Field("admin_id") id: Int
+    ): Observable<HttpResult<ClockRecordDatas>>
+
+    @POST(CHANEGPROFILE)
+    @FormUrlEncoded
+    fun changeProfile(
+            @Header("token") token: String,
+            @Field("username") username: String,
+            @Field("nickname") nickname: String,
+            @Field("avatar") avatar: String,
+            @Field("bio") bio: String=""
     ): Observable<HttpResult<Any>>
 }

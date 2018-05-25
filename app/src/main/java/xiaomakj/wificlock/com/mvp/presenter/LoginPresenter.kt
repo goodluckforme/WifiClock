@@ -4,6 +4,9 @@ package xiaomakj.wificlock.com.mvp.presenter
 import android.animation.Animator
 import android.content.Context
 import android.util.Log
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.OnCompositionLoadedListener
+import com.airbnb.lottie.parser.LottieCompositionParser
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.toast
 import javax.inject.Inject
@@ -25,24 +28,8 @@ class LoginPresenter @Inject constructor(private val appApi: AppApi, private val
         mContentView.loginModel = LoginModel()
         val loginActivity = mView as LoginActivity
         val laLogin = mContentView.LaLogin
-        laLogin.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {
-            }
-
-            override fun onAnimationEnd(animation: Animator?) {
-                laLogin.clearAnimation()
-                loginActivity.launchActivity<MainActivity> { }
-                loginActivity.finish()
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {
-            }
-
-            override fun onAnimationStart(animation: Animator?) {
-            }
-        })
         laLogin.onClick {
-            if (laLogin.isAnimating) return@onClick
+            loginActivity.dailog.show()
             val account = mContentView.edAccound.text.toString().trim()
             val psw = mContentView.edPsw.text.toString().trim()
             if (account.isEmpty() || psw.isEmpty()) {
@@ -50,13 +37,15 @@ class LoginPresenter @Inject constructor(private val appApi: AppApi, private val
             } else {
                 appApi.toLogin(account, psw, object : BaseObserver<LoginDatas>(loginActivity) {
                     override fun onRequestFail(e: Throwable) {
+                        loginActivity.dailog.dismiss()
                         loginActivity.toast(e.message.toString())
                     }
 
                     override fun onNetSuccess(datas: LoginDatas) {
+                        loginActivity.dailog.dismiss()
                         Log.i("LoginDatas", "LoginDatas====================$datas")
                         SharedPreferencesUtil.instance?.putObject("USERINFO", datas.userinfo)
-                        laLogin.playAnimation()
+                        loginActivity.launchActivity<MainActivity> {  }
                     }
                 })
             }

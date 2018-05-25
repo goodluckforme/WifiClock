@@ -34,7 +34,7 @@
             android:name="com.amap.api.v2.apikey"
             android:value="48f145cb350707a7dc363fe268407aa0" />
 
-        <activity android:name=".mvp.ui.activity.MainActivity"></activity>
+        <activity android:name=".mvp.ui.activity.MainActivity" />
         <activity android:name=".mvp.ui.activity.WifiDetailActivity" />
 
         <service android:name=".services.ColockSevice" />
@@ -43,9 +43,7 @@
 
         <service android:name="com.amap.api.location.APSService" />
 
-        <activity android:name=".mvp.ui.activity.LoginActivity">
-
-        </activity>
+        <activity android:name=".mvp.ui.activity.LoginActivity" />
         <activity android:name=".mvp.ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,6 +51,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".mvp.ui.activity.ClockRecordActivity" />
+        <activity android:name=".mvp.ui.activity.UserCenterActivity"></activity>
     </application>
 
 </manifest>

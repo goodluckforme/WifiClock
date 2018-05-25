@@ -86,7 +86,7 @@ class ColockSevice : Service() {
                     val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
                     val mSSID = SharedPreferencesUtil.instance?.getString("WORK_SSID") ?: ""
                     val mBSSID = SharedPreferencesUtil.instance?.getString("WORK_BSSID") ?: ""
-                    if (mSSID.isEmpty()){
+                    if (mSSID.isEmpty()) {
                         toast("请设置常用打卡地点")
                         return@subscribe
                     }
@@ -183,10 +183,10 @@ class ColockSevice : Service() {
     lateinit var mColockOnLocationChangeListener: ColockOnLocationChangeListener
 
     inner class ClockBinder : Binder() {
-        fun startForeground(listener: ColockOnLocationChangeListener) {
+        fun startForeground(listener: ColockOnLocationChangeListener? = null) {
             play()
             mClockBinder.starWIFIStatetListenter()
-            mClockBinder.startLocationListener(listener)
+            if (listener != null) mClockBinder.startLocationListener(listener)
         }
 
         fun stopForeground() = stop()

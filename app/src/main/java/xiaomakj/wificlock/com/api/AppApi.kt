@@ -13,6 +13,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import xiaomakj.wificlock.com.common.BASEURL
+import xiaomakj.wificlock.com.data.ClockRecordDatas
 import xiaomakj.wificlock.com.data.LoginDatas
 import xiaomakj.wificlock.com.data.TestDatas
 import xiaomakj.wificlock.com.data.WifiParams
@@ -57,12 +58,13 @@ class AppApi private constructor() {
                 .subscribe(observer)
     }
 
-    fun upload(key: String, file: File, observer: BaseObserver<Any>): Subscription? {
+    fun upload(key: String = "", token: String, file: File, observer: BaseObserver<Any>): Subscription? {
         val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        val data = MultipartBody.Part.createFormData("avatar", file.name, requestFile)
+        val data = MultipartBody.Part.createFormData("file", file.name, requestFile)
         val key = RequestBody.create(MediaType.parse("multipart/form-data"), key)
         val client = RequestBody.create(MediaType.parse("multipart/form-data"), "android")
         return observer(observer, appService.upload(
+                token,
                 key,
                 data,
                 client
@@ -75,7 +77,7 @@ class AppApi private constructor() {
     }
 
 
-    //测试我搭建的PHP平台
+    //添加一个打卡记录
     fun addClockRecord(wifiParams: WifiParams, observer: BaseObserver<Any>): Subscription? {
         return observer(observer, appService.addClockRecord(
                 wifiParams.admin_id,
@@ -92,6 +94,18 @@ class AppApi private constructor() {
         return observer(observer, appService.login(
                 account,
                 psw
+        ))
+    }
+
+    fun getClockRecord(id: Int, observer: BaseObserver<ClockRecordDatas>): Subscription? {
+        return observer(observer, appService.getClockRecord(id))
+    }
+
+    fun changeProfile(userinfo: LoginDatas.Userinfo, observer: BaseObserver<Any>): Subscription? {
+        return observer(observer, appService.changeProfile(userinfo.token,
+                userinfo.username,
+                userinfo.nickname,
+                userinfo.avatar
         ))
     }
 }

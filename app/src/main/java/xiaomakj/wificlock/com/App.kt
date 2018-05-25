@@ -16,6 +16,7 @@ import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
+import com.thanosfisherman.wifiutils.WifiUtils
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.text.SimpleDateFormat
@@ -34,6 +35,7 @@ class App : Application(), (AMapLocation) -> Unit {
         SharedPreferencesUtil.init(this, packageName + "_preference", Context.MODE_PRIVATE)
 //        Log.i("sHA1", sHA1(this))
         initGDMap()
+        WifiUtils.enableLog(true)
     }
 
     companion object {

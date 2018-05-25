@@ -1,0 +1,200 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="xiaomakj.wificlock.com.mvp.presenter.USerCenterPresenter.UserCenterModel" />
+
+        <variable
+            name="uSerCenterModel"
+            type="UserCenterModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <include layout="@layout/header"></include>
+
+        <ImageView
+            android:id="@+id/user_header"
+            android:layout_width="@dimen/dimen_100dp"
+            android:layout_height="@dimen/dimen_100dp"
+            android:onClick="@{uSerCenterModel.changeAvatar}"
+            android:layout_marginTop="@dimen/dimen_20dp" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_20dp"
+            android:textColor="@color/color_000000"
+            android:textSize="@dimen/font_size_16" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/color_E2E2E2"></View>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_F2F2F2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_48dp"
+                    android:background="?android:selectableItemBackground"
+                    android:clickable="true"
+                    android:onClick="@{uSerCenterModel.clockRecord}">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:padding="@dimen/spacing_10"
+                        android:src="@mipmap/enter" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:gravity="center"
+                        android:text="@string/clockrecord"
+                        android:textColor="@color/color_555555"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/color_E2E2E2"></View>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_48dp"
+                    android:background="?android:selectableItemBackground"
+                    android:clickable="true"
+                    android:onClick="@{uSerCenterModel.autoClock}">
+
+                    <ImageView
+                        android:id="@+id/AutoClockIv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:enabled="false"
+                        android:padding="@dimen/spacing_10"
+                        android:src="@drawable/open_switch_selector" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:gravity="center"
+                        android:text="@string/AutoClock"
+                        android:textColor="@color/color_555555"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/color_E2E2E2"></View>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_48dp"
+                    android:background="?android:selectableItemBackground"
+                    android:clickable="true"
+                    android:onClick="@{uSerCenterModel.feedback}">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:padding="@dimen/spacing_10"
+                        android:src="@mipmap/feedback" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:gravity="center"
+                        android:text="@string/feedback"
+                        android:textColor="@color/color_555555"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/color_E2E2E2"></View>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_48dp"
+                    android:background="?android:selectableItemBackground"
+                    android:clickable="true"
+                    android:onClick="@{uSerCenterModel.star}">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:padding="@dimen/spacing_10"
+                        android:src="@mipmap/star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:gravity="center"
+                        android:text="@string/star"
+                        android:textColor="@color/color_555555"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/color_E2E2E2"></View>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_48dp"
+                    android:background="?android:selectableItemBackground"
+                    android:clickable="true"
+                    android:onClick="@{uSerCenterModel.outlogin}">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:padding="@dimen/spacing_10"
+                        android:src="@mipmap/exit" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:gravity="center"
+                        android:text="@string/exit"
+                        android:textColor="@color/color_555555"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.1dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/color_E2E2E2"></View>
+                </RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

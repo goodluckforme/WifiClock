@@ -22,7 +22,6 @@ import android.widget.TextView
 import com.aspsine.irecyclerview.universaladapter.ViewHolderHelper
 import com.aspsine.irecyclerview.universaladapter.recyclerview.CommonRecycleViewAdapter
 import com.thanosfisherman.wifiutils.WifiUtils
-import com.thanosfisherman.wifiutils.wifiScan.ScanResultsListener
 import com.thanosfisherman.wifiutils.wifiState.WifiStateListener
 import kotlinx.android.synthetic.main.header.view.*
 import org.jetbrains.anko.*
@@ -34,13 +33,12 @@ import xiaomakj.wificlock.com.R
 import xiaomakj.wificlock.com.api.AppApi
 import xiaomakj.wificlock.com.api.BaseObserver
 import xiaomakj.wificlock.com.common.RxPresenter
+import xiaomakj.wificlock.com.data.ClockRecordDatas
 import xiaomakj.wificlock.com.data.LoginDatas
 import xiaomakj.wificlock.com.data.WifiParams
 import xiaomakj.wificlock.com.databinding.ActivityMainBinding
 import xiaomakj.wificlock.com.mvp.contract.MainContract
-import xiaomakj.wificlock.com.mvp.ui.activity.ChooseWorkPointActivity
-import xiaomakj.wificlock.com.mvp.ui.activity.MainActivity
-import xiaomakj.wificlock.com.mvp.ui.activity.WifiDetailActivity
+import xiaomakj.wificlock.com.mvp.ui.activity.*
 import xiaomakj.wificlock.com.services.ColockSevice
 import xiaomakj.wificlock.com.utils.LocationUtils
 import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
@@ -51,7 +49,7 @@ import kotlin.experimental.and
 
 
 class MainPresenter @Inject constructor(private val appApi: AppApi, private val context: Context) :
-        RxPresenter<MainContract.View, ActivityMainBinding>(), MainContract.Presenter, ColockSevice.ColockOnLocationChangeListener {
+        RxPresenter<MainContract.View, ActivityMainBinding>(), MainContract.Presenter{
     lateinit var baseReclyerViewAdapter: CommonRecycleViewAdapter<ScanResult>
     lateinit var mClockBinder: ColockSevice.ClockBinder
     var choose_place_br: BroadcastReceiver? = null
@@ -60,7 +58,7 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
     override fun getPermission() {
         val mainActivity = mView as MainActivity
         loginDatas = SharedPreferencesUtil.instance?.getObject("USERINFO", LoginDatas.Userinfo::class.java) ?: return
-        mainActivity.toast("欢迎：${loginDatas.nickname}")
+        //mainActivity.toast("欢迎：${loginDatas.nickname}")
         if (choose_place_br == null) {
             choose_place_br = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
@@ -71,7 +69,6 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
             }
             mainActivity.registerReceiver(choose_place_br, IntentFilter("COLOCKSEVICE_NEED_WORK_PLACE"))
         }
-        WifiUtils.enableLog(true)
         mContentView.mainHead.head_right.onClick {
             showSellerPop()
         }
@@ -81,8 +78,9 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
         mainActivity.bindService(intent, object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                 mClockBinder = service as ColockSevice.ClockBinder
-                mClockBinder.startLocationListener(this@MainPresenter)
-                mContentView.AutoClock.isChecked = SharedPreferencesUtil.instance?.getBoolean("AutoClock", false) == true
+                val isCheck = SharedPreferencesUtil.instance?.getBoolean("AutoClock", false) ?: false
+                if (isCheck) mClockBinder?.startForeground()
+
             }
 
             override fun onServiceDisconnected(name: ComponentName?) {
@@ -90,14 +88,8 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
             }
 
         }, Context.BIND_AUTO_CREATE)
-        mContentView.AutoClock.onCheckedChange { _, isChecked ->
-            if (isChecked) {
-                mClockBinder.startForeground(this@MainPresenter)
-            } else {
-                mClockBinder.stopForeground()
-            }
-            SharedPreferencesUtil.instance?.putBoolean("AutoClock", isChecked)
-        }
+
+        getWifiList(mainActivity)
     }
 
     var mPopupWindow: PopupWindow? = null
@@ -121,7 +113,9 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                         "连接WIFI",
                         "WIFI的信息",
                         "打卡上班",
-                        "选择上班地点"
+                        "选择上班地点",
+                        "查询打卡记录",
+                        "个人中心"
                 )) {
                     @SuppressLint("WifiManagerLeak")
                     override fun convert(helper: ViewHolderHelper?, good: String, position: Int) {
@@ -130,14 +124,7 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                         textView?.onClick {
                             when (position) {
                                 0 -> {
-                                    mainActivity.dailog.apply {
-                                        setMessage(mainActivity.getString(R.string.loading))
-                                        show()
-                                    }
-                                    WifiUtils.withContext(mainActivity).scanWifi { scanResults ->
-                                        baseReclyerViewAdapter.replaceAll(scanResults)
-                                        mainActivity.dailog.dismiss()
-                                    }.start()
+                                    getWifiList(mainActivity)
                                 }
                                 1 -> {
                                     mClockBinder.starWIFIStatetListenter()
@@ -221,6 +208,13 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                                 8 -> {
                                     mainActivity.launchActivity<ChooseWorkPointActivity>(1102)
                                 }
+                                9 -> {
+                                    mainActivity.launchActivity<ClockRecordActivity>()
+
+                                }
+                                10 -> {
+                                    mainActivity.launchActivity<UserCenterActivity>()
+                                }
                             }
                         }
                     }
@@ -232,13 +226,17 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
         mPopupWindow?.showAsDropDown(mContentView.mainHead.head_right, 0, 0)
     }
 
-    override fun enableGps() {
-
+    private fun getWifiList(mainActivity: MainActivity) {
+        mainActivity.dailog.apply {
+            setMessage(mainActivity.getString(R.string.loading))
+            show()
+        }
+        WifiUtils.withContext(mainActivity).scanWifi { scanResults ->
+            baseReclyerViewAdapter.replaceAll(scanResults)
+            mainActivity.dailog.dismiss()
+        }.start()
     }
 
-    override fun disableGps() {
-        toEnableGPS()
-    }
 
     private fun toEnableGPS() {
         val mainActivity = mView as MainActivity
@@ -249,7 +247,7 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                 }
                 negativeButton("拒绝") {}
             }.show()
-        } else mainActivity.toast("GPS已经卡其")
+        } else mainActivity.toast("GPS已经开启")
 
     }
 

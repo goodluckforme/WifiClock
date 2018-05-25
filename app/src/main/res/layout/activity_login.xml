@@ -1,5 +1,4 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -16,7 +15,14 @@
         android:background="@drawable/shape_gradient"
         android:orientation="vertical">
 
-        <include layout="@layout/header"></include>
+        <TextView
+            android:id="@+id/head_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_48dp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
 
         <EditText
             android:id="@+id/edAccound"
@@ -24,7 +30,7 @@
             android:layout_height="@dimen/dimen_50dp"
             android:layout_marginLeft="@dimen/dimen_20dp"
             android:layout_marginRight="@dimen/dimen_20dp"
-            android:layout_marginTop="@dimen/dimen_80dp"
+            android:layout_marginTop="@dimen/dimen_100dp"
             android:background="@drawable/edit_bg"
             android:hint="@string/tip_account"
             android:paddingLeft="@dimen/dimen_20dp"
@@ -53,18 +59,17 @@
             android:textColorHint="@color/color_2F6879"
             android:textSize="@dimen/font_size_16" />
 
-        <FrameLayout
+        <Button
+            android:id="@+id/LaLogin"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/LaLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:lottie_autoPlay="false"
-                app:lottie_fileName="animation-w512-h512.json"
-                app:lottie_loop="false" />
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_80dp"
+            android:background="@drawable/login_bt_bg"
+            android:text="@string/login"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16"
+            android:textStyle="italic" />
     </LinearLayout>
 </layout>

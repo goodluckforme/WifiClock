@@ -20,4 +20,9 @@
     <string name="app_name_introduce">打卡大师</string>
     <string name="app_right">Copyright © 1998 - 2018 xiaomakeji.com All Rights Reserved</string>
     <string name="nullstring" />
+    <string name="clockrecord">打卡记录</string>
+    <string name="exit">退出登录</string>
+    <string name="usercenter">个人中心</string>
+    <string name="feedback">意见反馈</string>
+    <string name="star">点个赞吧</string>
 </resources>

@@ -3,22 +3,20 @@
 
     <data>
 
-        <import type="xiaomakj.wificlock.com.mvp.presenter.MainPresenter.MainModel" />
+        <import type="xiaomakj.wificlock.com.mvp.presenter.ClockRecordPresenter.ClockRecordModel" />
 
-        <import type="android.support.v7.widget.RecyclerView.Adapter" />
 
         <variable
-            name="mainModel"
-            type="MainModel" />
+            name="clockRecordModel"
+            type="ClockRecordModel" />
 
         <variable
             name="adapter"
-            type="Adapter" />
+            type="android.support.v7.widget.RecyclerView.Adapter" />
 
         <variable
             name="layoutManager"
             type="android.support.v7.widget.RecyclerView.LayoutManager" />
-
     </data>
 
     <LinearLayout
@@ -26,9 +24,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/main_head"
-            layout="@layout/header"></include>
+        <include layout="@layout/header"></include>
 
         <com.aspsine.irecyclerview.IRecyclerView
             android:layout_width="match_parent"
