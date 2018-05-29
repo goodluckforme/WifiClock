@@ -21,9 +21,7 @@ import xiaomakj.wificlock.com.data.LoginDatas
 import xiaomakj.wificlock.com.data.UploadDats
 import xiaomakj.wificlock.com.databinding.ActivityUserCenterBinding
 import xiaomakj.wificlock.com.mvp.contract.UserCenterContract
-import xiaomakj.wificlock.com.mvp.ui.activity.ClockRecordActivity
-import xiaomakj.wificlock.com.mvp.ui.activity.LoginActivity
-import xiaomakj.wificlock.com.mvp.ui.activity.UserCenterActivity
+import xiaomakj.wificlock.com.mvp.ui.activity.*
 import xiaomakj.wificlock.com.services.ColockSevice
 import xiaomakj.wificlock.com.utils.GlideCircleTransform
 import xiaomakj.wificlock.com.utils.LocationUtils
@@ -105,7 +103,8 @@ class USerCenterPresenter @Inject constructor(private val appApi: AppApi, privat
         }
 
         fun feedback(v: View) {
-
+            val userCenterActivity = mView as UserCenterActivity
+            userCenterActivity.launchActivity<FeedBackActivity> { }
         }
 
         fun changeAvatar(v: View) {
@@ -116,6 +115,8 @@ class USerCenterPresenter @Inject constructor(private val appApi: AppApi, privat
         }
 
         fun star(v: View) {
+            val userCenterActivity = mView as UserCenterActivity
+            userCenterActivity.launchActivity<WebActivity> {putExtra("URL","https://github.com/goodluckforme/WifiClock") }
         }
 
         fun autoClock(v: View) {

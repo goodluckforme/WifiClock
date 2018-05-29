@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- 允许程序访问CellID或WiFi热点来获取粗略的位置 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- for Android 6 and above -->
     <application
@@ -29,12 +30,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon">
+        tools:replace="android:name,android:icon">
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="48f145cb350707a7dc363fe268407aa0" />
 
-        <activity android:name=".mvp.ui.activity.MainActivity" />
+        <activity
+            android:name=".mvp.ui.activity.MainActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".mvp.ui.activity.WifiDetailActivity" />
 
         <service android:name=".services.ColockSevice" />
@@ -42,6 +45,18 @@
         <activity android:name=".mvp.ui.activity.ChooseWorkPointActivity" />
 
         <service android:name="com.amap.api.location.APSService" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="xiaomakj.wificlock.com.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"
+                tools:replace="android:resource" />
+        </provider>
 
         <activity android:name=".mvp.ui.activity.LoginActivity" />
         <activity android:name=".mvp.ui.activity.SplashActivity">
@@ -52,7 +67,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".mvp.ui.activity.ClockRecordActivity" />
-        <activity android:name=".mvp.ui.activity.UserCenterActivity"></activity>
+        <activity android:name=".mvp.ui.activity.UserCenterActivity" />
+        <activity android:name=".mvp.ui.activity.FeedBackActivity" />
+        <activity android:name=".mvp.ui.activity.WebActivity" />
+        <activity android:name=".mvp.ui.activity.RegisterActivity"></activity>
     </application>
 
 </manifest>

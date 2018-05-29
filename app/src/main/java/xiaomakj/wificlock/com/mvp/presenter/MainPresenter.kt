@@ -49,7 +49,7 @@ import kotlin.experimental.and
 
 
 class MainPresenter @Inject constructor(private val appApi: AppApi, private val context: Context) :
-        RxPresenter<MainContract.View, ActivityMainBinding>(), MainContract.Presenter{
+        RxPresenter<MainContract.View, ActivityMainBinding>(), MainContract.Presenter {
     lateinit var baseReclyerViewAdapter: CommonRecycleViewAdapter<ScanResult>
     lateinit var mClockBinder: ColockSevice.ClockBinder
     var choose_place_br: BroadcastReceiver? = null
@@ -145,13 +145,14 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                                 5 -> {
                                     val mSSID = SharedPreferencesUtil.instance?.getString("WORK_SSID") ?: ""
                                     val mBSSID = SharedPreferencesUtil.instance?.getString("WORK_BSSID") ?: ""
+                                    val psw = SharedPreferencesUtil.instance?.getString(mSSID) ?: ""
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                         mainActivity.dailog.show()
                                         WifiUtils.withContext(mainActivity).
-                                                connectWith(mSSID, "chuyukeji302")
+                                                connectWith(mSSID, psw)
                                                 .onConnectionResult { isSuccess ->
                                                     mainActivity.dailog.dismiss()
-                                                    mainActivity.toast("连接${mSSID}${if (isSuccess) "成功" else "失败"}")
+                                                    mainActivity.toast("连接${mSSID}${if (isSuccess) "成功" else "失败"} 密码 : $psw")
                                                 }
                                                 .start()
                                     }
@@ -178,6 +179,7 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                                     val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
                                     if (!coordinate.contains(",")) return@onClick
                                     val currentAmapLocation = App.instance.amapLocation ?: return@onClick
+                                    mainActivity.dailog.show()
                                     val split = coordinate.split(",")
                                     val wifiManager = mainActivity.getSystemService(WIFI_SERVICE) as WifiManager
                                     val disByRssi = DisByRssi(wifiManager.connectionInfo.rssi)
@@ -193,9 +195,11 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                                             object : BaseObserver<Any>(mainActivity) {
                                                 override fun onRequestFail(e: Throwable) {
                                                     mainActivity.toast(e.message.toString())
+                                                    mainActivity.dailog.dismiss()
                                                 }
 
                                                 override fun onNetSuccess(result: Any) {
+                                                    mainActivity.dailog.dismiss()
                                                     mainActivity.alert {
                                                         message = "打卡成功"
                                                         positiveButton("确定") {
@@ -300,7 +304,7 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
                 helper?.convertView?.onLongClick {
                     val mSSID = SharedPreferencesUtil.instance?.getString("WORK_SSID")
                     val mBSSID = SharedPreferencesUtil.instance?.getString("WORK_BSSID")
-                    if (wifiName == mSSID && BSSID == mBSSID)
+                    if (wifiName == mSSID && BSSID == mBSSID) {
                         mainActivity.
                                 alert("是否删除常用打卡点:${wifiName}", wifiName) {
                                     positiveButton("是") {
@@ -311,16 +315,29 @@ class MainPresenter @Inject constructor(private val appApi: AppApi, private val 
 
                                     }
                                 }.show()
-                    else mainActivity.
-                            alert("是否设置:${wifiName}为常用打卡点", wifiName) {
-                                positiveButton("是") {
-                                    SharedPreferencesUtil.instance?.putString("WORK_SSID", wifiName)
-                                    SharedPreferencesUtil.instance?.putString("WORK_BSSID", BSSID)
-                                }
-                                negativeButton("否") {
+                    } else {
+                        val psw = SharedPreferencesUtil.instance?.getString(wifiName) ?: ""
+                        mainActivity.
+                                alert("是否设置:${wifiName}为常用打卡点", wifiName) {
+                                    customView {
+                                        val pswed = editText {
+                                            hint = "请输入psw码"
+                                            setText(psw)
+                                        }
+                                        positiveButton("是") {
+                                            val trim = pswed.text.toString().trim()
+                                            if (!trim.isEmpty()) {
+                                                SharedPreferencesUtil.instance?.putString("WORK_SSID", wifiName)
+                                                SharedPreferencesUtil.instance?.putString("WORK_BSSID", BSSID)
+                                                SharedPreferencesUtil.instance?.putString(wifiName, trim)
+                                            }
+                                        }
+                                        negativeButton("否") {
 
-                                }
-                            }.show()
+                                        }
+                                    }
+                                }.show()
+                    }
                 }
                 helper?.convertView?.onClick {
                     mainActivity.

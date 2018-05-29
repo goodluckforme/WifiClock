@@ -15,7 +15,7 @@
     <string name="AutoClock">自动打卡</string>
     <string name="ChooseWorkPoint">请选择上班地点</string>
     <string name="login">登录</string>
-    <string name="tip_account">请输入账号(Email地址)</string>
+    <string name="tip_account">请输入账号</string>
     <string name="tip_psw">请输入您的密码</string>
     <string name="app_name_introduce">打卡大师</string>
     <string name="app_right">Copyright © 1998 - 2018 xiaomakeji.com All Rights Reserved</string>
@@ -25,4 +25,10 @@
     <string name="usercenter">个人中心</string>
     <string name="feedback">意见反馈</string>
     <string name="star">点个赞吧</string>
+    <string name="register">注册</string>
+    <string name="toMain">去首页</string>
+    <string name="tip_phone">请输入手机号码</string>
+    <string name="tip_email">请输入邮箱</string>
+    <string name="tip_psw2">请确认您的密码</string>
+    <string name="err_psw_common">两次输入密码不同</string>
 </resources>

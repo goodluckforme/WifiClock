@@ -67,4 +67,6 @@ class MainActivity : BaseActivity<MainPresenter, MainContract.View, ActivityMain
             SharedPreferencesUtil.instance?.putString("formatAddress", coordinate)
         }
     }
+
+
 }

@@ -86,8 +86,9 @@ class ColockSevice : Service() {
                     val coordinate = SharedPreferencesUtil.instance?.getString("coordinate") ?: ""
                     val mSSID = SharedPreferencesUtil.instance?.getString("WORK_SSID") ?: ""
                     val mBSSID = SharedPreferencesUtil.instance?.getString("WORK_BSSID") ?: ""
-                    if (mSSID.isEmpty()) {
-                        toast("请设置常用打卡地点")
+                    val psw = SharedPreferencesUtil.instance?.getString(mSSID) ?: ""
+                    if (mSSID.isEmpty()||psw.isEmpty()) {
+                        toast("请设置常用打卡WIFI或密码")
                         return@subscribe
                     }
                     if (coordinate.contains(",")) {
@@ -98,7 +99,7 @@ class ColockSevice : Service() {
                             toast("距离打卡地点小于100米尝试连接公司WIFI")
                             //扫描并尝试连接Chuyukeji5.0
                             WifiUtils.withContext(applicationContext)
-                                    .connectWithScanResult("chyukeji302") { scanResults ->
+                                    .connectWithScanResult(psw) { scanResults ->
                                         scanResults.firstOrNull { mSSID == it.SSID }
                                     }
                                     .onConnectionResult { isSuccess ->
@@ -110,7 +111,7 @@ class ColockSevice : Service() {
                                                 toAddClockRecord()
                                             }
                                         } else {
-                                            toast("连接公司WIFI失败 请尝试手动打卡")
+                                            toast("连接公司WIFI${mSSID}失败 请尝试手动打卡")
                                         }
                                     }.start()
                         } else {
@@ -147,7 +148,6 @@ class ColockSevice : Service() {
                     }
 
                     override fun onNetSuccess(result: Any) {
-                        //TODO 这里返回的是0 应该改成200
                         intervalSb?.unsubscribe()
                         toast("打卡成功")
                     }

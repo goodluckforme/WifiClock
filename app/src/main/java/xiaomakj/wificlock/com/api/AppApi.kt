@@ -108,4 +108,8 @@ class AppApi private constructor() {
                 userinfo.avatar
         ))
     }
+
+    fun register(hashMapOf: HashMap<String, String>, observer: BaseObserver<LoginDatas>): Subscription? {
+        return observer(observer, appService.register(hashMapOf))
+    }
 }

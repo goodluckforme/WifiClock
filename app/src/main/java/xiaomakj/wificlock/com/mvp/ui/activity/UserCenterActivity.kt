@@ -48,10 +48,11 @@ class UserCenterActivity : BaseActivity<USerCenterPresenter, UserCenterContract.
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == RC_CHOOSE_PHOTO) {
-            val selectedPhotos = BGAPhotoPickerActivity.getSelectedImages(data)[0]
+            val selectedImages = BGAPhotoPickerActivity.getSelectedImages(data) ?: return
+            val selectedPhotos = selectedImages[0]
             val file = File(selectedPhotos)
             if (!file.exists())return
             mPresenter.uploadHeadImg(file)

@@ -8,6 +8,7 @@ import okhttp3.RequestBody
 import retrofit2.http.*
 import rx.Observable
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by MaQi on 2017/12/21.
@@ -23,16 +24,11 @@ interface AppService {
     ): Observable<HttpResult<LoginDatas>>
 
 
-    @POST("REGISTER")
+    @POST(REGISTER)
     @FormUrlEncoded
     fun register(
-            @Field("mobile") mobile: String,
-            @Field("password") password: String,
-            @Field("inviter") inviter: String,
-            @Field("type") type: Int,
-            @Field("mobilecode") mobilecode: String,
-            @Field("client") client: String
-    ): Observable<HttpResult<Any>>
+            @FieldMap mobile: HashMap<String, String>
+    ): Observable<HttpResult<LoginDatas>>
 
     @POST("SENDCODE")
     @FormUrlEncoded
@@ -114,6 +110,6 @@ interface AppService {
             @Field("username") username: String,
             @Field("nickname") nickname: String,
             @Field("avatar") avatar: String,
-            @Field("bio") bio: String=""
+            @Field("bio") bio: String = ""
     ): Observable<HttpResult<Any>>
 }

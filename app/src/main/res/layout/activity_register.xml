@@ -2,11 +2,11 @@
 
     <data>
 
-        <import type="xiaomakj.wificlock.com.mvp.presenter.LoginPresenter.LoginModel" />
+        <import type="xiaomakj.wificlock.com.mvp.presenter.RegisterPresenter.RegisterModel" />
 
         <variable
-            name="loginModel"
-            type="LoginModel" />
+            name="registerModel"
+            type="RegisterModel" />
     </data>
 
     <LinearLayout
@@ -30,9 +30,41 @@
             android:layout_height="@dimen/dimen_50dp"
             android:layout_marginLeft="@dimen/dimen_20dp"
             android:layout_marginRight="@dimen/dimen_20dp"
-            android:layout_marginTop="@dimen/dimen_100dp"
+            android:layout_marginTop="@dimen/dimen_50dp"
             android:background="@drawable/edit_bg"
             android:hint="@string/tip_account"
+            android:paddingLeft="@dimen/dimen_20dp"
+            android:textColorHint="@color/color_2F6879"
+            android:textSize="@dimen/font_size_16" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:background="@color/white"></View>
+
+        <EditText
+            android:id="@+id/edphone"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:background="@drawable/edit_bg_down"
+            android:hint="@string/tip_phone"
+            android:inputType="phone"
+            android:paddingLeft="@dimen/dimen_20dp"
+            android:textColorHint="@color/color_2F6879"
+            android:textSize="@dimen/font_size_16" />
+
+        <EditText
+            android:id="@+id/edEmail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:background="@drawable/edit_bg"
+            android:hint="@string/tip_email"
             android:paddingLeft="@dimen/dimen_20dp"
             android:textColorHint="@color/color_2F6879"
             android:textSize="@dimen/font_size_16" />
@@ -57,51 +89,31 @@
             android:textColorHint="@color/color_2F6879"
             android:textSize="@dimen/font_size_16" />
 
+        <EditText
+            android:id="@+id/edPsw2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:background="@drawable/edit_bg_down"
+            android:hint="@string/tip_psw2"
+            android:inputType="textPassword"
+            android:paddingLeft="@dimen/dimen_20dp"
+            android:textColorHint="@color/color_2F6879"
+            android:textSize="@dimen/font_size_16" />
+
         <Button
-            android:id="@+id/LaLogin"
+            android:id="@+id/toRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_20dp"
             android:layout_marginRight="@dimen/dimen_20dp"
             android:layout_marginTop="@dimen/dimen_50dp"
             android:background="@drawable/login_bt_bg"
-            android:text="@string/login"
+            android:text="@string/register"
             android:textColor="@color/white"
             android:textSize="@dimen/font_size_16"
             android:textStyle="italic" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/dimen_20dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/toRegister"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/bot_line"
-                android:text="@string/register"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_size_16" />
-
-            <View
-                android:id="@+id/bot_line"
-                android:layout_width="@dimen/dimen_1dp"
-                android:layout_height="@dimen/dimen_20dp"
-                android:layout_centerInParent="true"
-                android:layout_margin="@dimen/dimen_20dp"
-                android:background="@color/white"></View>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:id="@+id/toMain"
-                android:layout_toRightOf="@+id/bot_line"
-                android:text="@string/toMain"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_size_16" />
-        </RelativeLayout>
     </LinearLayout>
 </layout>

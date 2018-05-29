@@ -47,4 +47,10 @@ https://github.com/ThanosFisherman/WifiUtils
 参考获取路由器MAC地址
 https://blog.csdn.net/crazyman2010/article/details/50464256
 
-完成查询打卡记录（分页 条件查询  联查 返还结果判断 ）  注册会员    
+ 完成查询打卡记录（分页 条件查询  联查）
+ 注册会员 
+ 修改用户头像 意见反馈  点赞 
+ 加入用户的WIFI密码管理  
+ WIFI传配置文件WIFIINFO.JSON 
+ 
+ 

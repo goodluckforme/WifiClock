@@ -1,15 +1,10 @@
 package xiaomakj.wificlock.com.mvp.presenter
 
 
-import android.animation.Animator
 import android.content.Context
 import android.util.Log
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.OnCompositionLoadedListener
-import com.airbnb.lottie.parser.LottieCompositionParser
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.toast
-import javax.inject.Inject
 import xiaomakj.wificlock.com.api.AppApi
 import xiaomakj.wificlock.com.api.BaseObserver
 import xiaomakj.wificlock.com.common.RxPresenter
@@ -18,8 +13,10 @@ import xiaomakj.wificlock.com.databinding.ActivityLoginBinding
 import xiaomakj.wificlock.com.mvp.contract.LoginContract
 import xiaomakj.wificlock.com.mvp.ui.activity.LoginActivity
 import xiaomakj.wificlock.com.mvp.ui.activity.MainActivity
+import xiaomakj.wificlock.com.mvp.ui.activity.RegisterActivity
 import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
 import xiaomakj.wificlock.com.utils.launchActivity
+import javax.inject.Inject
 
 class LoginPresenter @Inject constructor(private val appApi: AppApi, private val context: Context) :
         RxPresenter<LoginContract.View, ActivityLoginBinding>(), LoginContract.Presenter {
@@ -49,6 +46,12 @@ class LoginPresenter @Inject constructor(private val appApi: AppApi, private val
                     }
                 })
             }
+        }
+        mContentView.toMain.onClick {
+            loginActivity.launchActivity<MainActivity> {  }
+        }
+        mContentView.toRegister.onClick {
+            loginActivity.launchActivity<RegisterActivity> {  }
         }
     }
 
