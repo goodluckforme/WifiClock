@@ -59,7 +59,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/username"
-            android:text="打卡地点:湖北省武汉市洪山区凌家山北路29号靠近鼎业楼A座"
             android:textSize="@dimen/font_size_13" />
 
         <TextView
