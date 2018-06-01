@@ -30,10 +30,11 @@ interface AppService {
             @FieldMap mobile: HashMap<String, String>
     ): Observable<HttpResult<LoginDatas>>
 
-    @POST("SENDCODE")
+    @POST(SENDCODE)
     @FormUrlEncoded
     fun sendCode(
             @Field("mobile") mobile: String,
+            @Field("event") event: String = "",
             @Field("timeStamp") timeStamp: String = "" + (Calendar.getInstance().timeInMillis / 1000)
     ): Observable<HttpResult<Any>>
 

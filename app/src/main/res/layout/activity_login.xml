@@ -7,6 +7,9 @@
         <variable
             name="loginModel"
             type="LoginModel" />
+
+        <import type="xiaomakj.wificlock.com.utils.TextUtil"></import>
+
     </data>
 
     <LinearLayout
@@ -72,14 +75,13 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/dimen_20dp"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/toRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_marginTop="@dimen/dimen_20dp"
                 android:layout_toLeftOf="@+id/bot_line"
                 android:text="@string/register"
                 android:textColor="@color/white"
@@ -89,17 +91,30 @@
                 android:id="@+id/bot_line"
                 android:layout_width="@dimen/dimen_1dp"
                 android:layout_height="@dimen/dimen_20dp"
-                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
                 android:layout_margin="@dimen/dimen_20dp"
+                android:layout_marginTop="@dimen/dimen_20dp"
                 android:background="@color/white"></View>
 
             <TextView
+                android:id="@+id/getBackPsw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:id="@+id/toMain"
+                android:layout_marginTop="@dimen/dimen_20dp"
                 android:layout_toRightOf="@+id/bot_line"
-                android:text="@string/toMain"
+                android:text="@string/getBackPsw"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:id="@+id/loginBycaptcha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="@dimen/dimen_40dp"
+                android:text="@{TextUtil.getBuilder(@string/loginBycaptcha).setUnderline().create()}"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_size_16" />
         </RelativeLayout>

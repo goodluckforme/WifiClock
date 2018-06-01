@@ -12,6 +12,7 @@ import xiaomakj.wificlock.com.data.LoginDatas
 import xiaomakj.wificlock.com.databinding.ActivityLoginBinding
 import xiaomakj.wificlock.com.mvp.contract.LoginContract
 import xiaomakj.wificlock.com.mvp.ui.activity.LoginActivity
+import xiaomakj.wificlock.com.mvp.ui.activity.LogingCaptchaActivity
 import xiaomakj.wificlock.com.mvp.ui.activity.MainActivity
 import xiaomakj.wificlock.com.mvp.ui.activity.RegisterActivity
 import xiaomakj.wificlock.com.utils.SharedPreferencesUtil
@@ -47,8 +48,8 @@ class LoginPresenter @Inject constructor(private val appApi: AppApi, private val
                 })
             }
         }
-        mContentView.toMain.onClick {
-            loginActivity.launchActivity<MainActivity> {  }
+        mContentView.loginBycaptcha.onClick {
+            loginActivity.launchActivity<LogingCaptchaActivity> {  }
         }
         mContentView.toRegister.onClick {
             loginActivity.launchActivity<RegisterActivity> {  }

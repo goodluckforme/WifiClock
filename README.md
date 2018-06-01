@@ -48,9 +48,11 @@ https://github.com/ThanosFisherman/WifiUtils
 https://blog.csdn.net/crazyman2010/article/details/50464256
 
  完成查询打卡记录（分页 条件查询  联查）
- 注册会员 
- 修改用户头像 意见反馈  点赞 
+ #注册会员 
+ #修改用户头像 意见反馈  点赞 
  加入用户的WIFI密码管理  
  WIFI传配置文件WIFIINFO.JSON 
+ 忘记密码
+ 验证码部分
  
  

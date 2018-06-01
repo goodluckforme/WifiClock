@@ -1,0 +1,93 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="xiaomakj.wificlock.com.mvp.presenter.LogingCaptchaPresenter.LogingCaptchaModel" />
+
+        <variable
+            name="logingCaptchaModel"
+            type="LogingCaptchaModel" />
+
+        <import type="xiaomakj.wificlock.com.utils.Utils"></import>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_gradient"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/head_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_48dp"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+
+        <EditText
+            android:id="@+id/edPhone"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_100dp"
+            android:background="@drawable/edit_bg"
+            android:hint="@string/edPhone"
+            android:paddingLeft="@dimen/dimen_20dp"
+            android:textColorHint="@color/color_2F6879"
+            android:textSize="@dimen/font_size_16" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:background="@color/white"></View>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edCapcha"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_bg_down"
+                android:hint="@string/edCapcha"
+                android:inputType="number"
+                android:maxLength="6"
+                android:paddingLeft="@dimen/dimen_20dp"
+                android:textColorHint="@color/color_2F6879"
+                android:textSize="@dimen/font_size_16" />
+
+            <Button
+                android:id="@+id/getCode"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_margin="@dimen/dimen_5dp"
+                android:background="@drawable/login_bt_bg"
+                android:enabled="@{Utils.isMobile(edPhone.text.toString()) &amp;&amp; getCode.text.toString()==@string/getCode}"
+                android:text="@string/getCode"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/LaLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_50dp"
+            android:background="@drawable/login_bt_bg"
+            android:text="@string/login"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16"
+            android:textStyle="italic" />
+    </LinearLayout>
+</layout>

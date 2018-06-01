@@ -70,7 +70,8 @@
         <activity android:name=".mvp.ui.activity.UserCenterActivity" />
         <activity android:name=".mvp.ui.activity.FeedBackActivity" />
         <activity android:name=".mvp.ui.activity.WebActivity" />
-        <activity android:name=".mvp.ui.activity.RegisterActivity"></activity>
+        <activity android:name=".mvp.ui.activity.RegisterActivity" />
+        <activity android:name=".mvp.ui.activity.LogingCaptchaActivity"></activity>
     </application>
 
 </manifest>
