@@ -31,4 +31,10 @@
     <string name="tip_email">请输入邮箱</string>
     <string name="tip_psw2">请确认您的密码</string>
     <string name="err_psw_common">两次输入密码不同</string>
+    <string name="getBackPsw">找回密码</string>
+    <string name="loginBycaptcha">手机验证码登录</string>
+    <string name="edCapcha">请输入验证码</string>
+    <string name="getCode">获取验证码</string>
+    <string name="edPhone">请输入手机号码</string>
+    <string name="err_captcha">手机号码或验证码不能为空</string>
 </resources>

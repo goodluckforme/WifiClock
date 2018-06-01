@@ -101,6 +101,10 @@ class AppApi private constructor() {
         return observer(observer, appService.getClockRecord(id))
     }
 
+    fun sendCode(mobile: String, observer: BaseObserver<Any>): Subscription? {
+        return observer(observer, appService.sendCode(mobile))
+    }
+
     fun changeProfile(userinfo: LoginDatas.Userinfo, observer: BaseObserver<Any>): Subscription? {
         return observer(observer, appService.changeProfile(userinfo.token,
                 userinfo.username,
